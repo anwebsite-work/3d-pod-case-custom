@@ -452,7 +452,12 @@ input[type=range]{accent-color:#E85F91!important}
   .tool-actions{grid-column:1}
   .brief-grid,.field-grid{grid-template-columns:1fr}
   .field-grid .wide{grid-column:1}
-  .color-strip{top:10px;padding:6px 10px;gap:6px}
+  .color-strip{
+    top:10px;bottom:auto;
+    width:max-content;max-width:calc(100% - 24px);
+    padding:5px 8px;gap:5px;
+  }
+  .color-strip label{font-size:9px}
   .cs-swatch{width:20px;height:20px}
 }
 </style>
