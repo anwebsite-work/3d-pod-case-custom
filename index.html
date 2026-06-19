@@ -1023,7 +1023,18 @@ function loadExternalModel(model, token){
         if(!obj.isMesh) return;
         const name=(obj.name+' '+(obj.material?.name||'')).toLowerCase();
         if(name.includes('basecolor')) bodyMesh=obj;
-        if(name.includes('backpanel') || name.includes('basecolor')) colorMeshes.push(obj);
+        // Hide the naked phone's rear insert and logo. The POD case surface
+        // sits above this area and should fully cover both of them.
+        if(
+          name.includes('backpanel') ||
+          name.includes('material.005') ||
+          name.includes('material.007') ||
+          name.includes('screen.001')
+        ){
+          obj.visible=false;
+          return;
+        }
+        if(name.includes('basecolor')) colorMeshes.push(obj);
       });
       const printSurface=buildIphone17PrintSurface(bodyMesh);
       if(printSurface) printableMeshes.push(printSurface);
@@ -1054,46 +1065,33 @@ function loadExternalModel(model, token){
 
 function buildIphone17PrintSurface(bodyMesh){
   if(!bodyMesh) return null;
-  const source=bodyMesh.geometry.toNonIndexed();
-  const position=source.getAttribute('position');
-  const normal=source.getAttribute('normal');
-  const selected=[];
+  // A clean rounded panel covers the naked phone's rear insert and logo.
+  // It ends below the camera island and has its own flat, distortion-free UV.
+  const minY=-0.374,maxY=0.374;
+  const minZ=-0.812,maxZ=0.355;
+  const minShapeX=-maxZ,maxShapeX=-minZ;
+  const radius=0.055;
+  const shape=new THREE.Shape();
+  shape.moveTo(minShapeX+radius,minY);
+  shape.lineTo(maxShapeX-radius,minY);
+  shape.quadraticCurveTo(maxShapeX,minY,maxShapeX,minY+radius);
+  shape.lineTo(maxShapeX,maxY-radius);
+  shape.quadraticCurveTo(maxShapeX,maxY,maxShapeX-radius,maxY);
+  shape.lineTo(minShapeX+radius,maxY);
+  shape.quadraticCurveTo(minShapeX,maxY,minShapeX,maxY-radius);
+  shape.lineTo(minShapeX,minY+radius);
+  shape.quadraticCurveTo(minShapeX,minY,minShapeX+radius,minY);
 
-  // Extract only the physical rear-facing shell from the phone body. This
-  // creates a full-back POD surface while keeping the sides and screen clean.
-  for(let i=0;i<position.count;i+=3){
-    const avgX=(position.getX(i)+position.getX(i+1)+position.getX(i+2))/3;
-    const rearFacing=normal.getX(i)>.45 && normal.getX(i+1)>.45 && normal.getX(i+2)>.45;
-    if(rearFacing && avgX>.015) selected.push(i,i+1,i+2);
+  const geometry=new THREE.ShapeGeometry(shape,12);
+  const position=geometry.getAttribute('position');
+  const uvs=new Float32Array(position.count*2);
+  for(let i=0;i<position.count;i++){
+    const localShapeX=position.getX(i);
+    const localY=position.getY(i);
+    const worldZ=-localShapeX;
+    uvs[i*2]=(localY-minY)/(maxY-minY);
+    uvs[i*2+1]=(worldZ-minZ)/(maxZ-minZ);
   }
-  if(!selected.length) return null;
-
-  const positions=new Float32Array(selected.length*3);
-  const normals=new Float32Array(selected.length*3);
-  let minY=Infinity,maxY=-Infinity,minZ=Infinity,maxZ=-Infinity;
-  selected.forEach((sourceIndex,outIndex)=>{
-    const x=position.getX(sourceIndex)+0.001;
-    const y=position.getY(sourceIndex);
-    const z=position.getZ(sourceIndex);
-    positions[outIndex*3]=x;
-    positions[outIndex*3+1]=y;
-    positions[outIndex*3+2]=z;
-    normals[outIndex*3]=normal.getX(sourceIndex);
-    normals[outIndex*3+1]=normal.getY(sourceIndex);
-    normals[outIndex*3+2]=normal.getZ(sourceIndex);
-    minY=Math.min(minY,y);maxY=Math.max(maxY,y);
-    minZ=Math.min(minZ,z);maxZ=Math.max(maxZ,z);
-  });
-
-  const uvs=new Float32Array(selected.length*2);
-  for(let i=0;i<selected.length;i++){
-    const y=positions[i*3+1],z=positions[i*3+2];
-    uvs[i*2]=(y-minY)/Math.max(maxY-minY,.0001);
-    uvs[i*2+1]=(z-minZ)/Math.max(maxZ-minZ,.0001);
-  }
-  const geometry=new THREE.BufferGeometry();
-  geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));
-  geometry.setAttribute('normal',new THREE.BufferAttribute(normals,3));
   geometry.setAttribute('uv',new THREE.BufferAttribute(uvs,2));
   const material=new THREE.MeshStandardMaterial({
     color:hexToRGB(st.color.hex),
@@ -1106,6 +1104,8 @@ function buildIphone17PrintSurface(bodyMesh){
   });
   const surface=new THREE.Mesh(geometry,material);
   surface.name='iPhone17_PrintSurface';
+  surface.position.x=0.066;
+  surface.rotation.y=Math.PI/2;
   surface.renderOrder=3;
   bodyMesh.add(surface);
   return surface;
