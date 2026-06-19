@@ -151,7 +151,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'DM San
 h1.ptitle{
   font-family:'Bebas Neue',sans-serif;
   margin-top:10px;
-  font-size:clamp(28px,6vw,38px);letter-spacing:.03em;line-height:1.02;
+  max-width:100%;
+  font-size:clamp(26px,3.2vw,38px);letter-spacing:.03em;line-height:1.05;
+  text-wrap:balance;
 }
 h1.ptitle em{color:var(--accent2);font-style:normal}
 .pmeta{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
@@ -442,7 +444,7 @@ input[type=range]{accent-color:#E85F91!important}
   .viewer-pane{min-height:310px;height:42vh;max-height:390px}
   .info-pane{padding:12px;gap:10px}
   .product-header{padding:14px}
-  h1.ptitle{font-size:28px;line-height:1.05;margin-top:8px}
+  h1.ptitle{font-size:clamp(25px,7.2vw,31px);line-height:1.08;margin-top:8px;text-wrap:pretty}
   .trust-chips{display:none}
   .pmeta{margin-top:8px!important}
   .step-head{padding:11px 12px}
@@ -506,7 +508,7 @@ input[type=range]{accent-color:#E85F91!important}
   <div class="info-pane">
     <div class="product-header">
       <div class="product-badge">POD Customizer</div>
-      <h1 class="ptitle" id="productTitle">Create Your<br><em>Custom Print</em></h1>
+      <h1 class="ptitle" id="productTitle">Create Your <em>Custom Print</em></h1>
       <div class="pmeta" style="margin-top:10px">
         <div class="price">$24.99</div>
         <div class="stars">Live Preview</div>
@@ -946,7 +948,19 @@ function getModelDisplaySize(kind){
 function positionModelStage(){
   const pane=document.querySelector('.viewer-pane');
   const mobile=(pane?.clientWidth||window.innerWidth)<600;
-  modelStage.position.y=mobile ? -0.12 : 0;
+  const targetY=mobile ? -0.12 : 0;
+  modelStage.position.set(0,targetY,0);
+  centreModelInViewer(targetY);
+}
+
+function centreModelInViewer(targetY=0){
+  if(!currentModelGroup || !modelStage || !camera) return;
+  modelStage.updateMatrixWorld(true);
+  const centre=new THREE.Box3().setFromObject(currentModelGroup).getCenter(new THREE.Vector3());
+  // Move the complete rendered bounds back to the world origin. This remains
+  // accurate for models whose imported pivot is not at their visual centre.
+  modelStage.position.x-=centre.x;
+  modelStage.position.y+=targetY-centre.y;
 }
 
 function updateModelResponsiveScale(){
@@ -969,9 +983,9 @@ function fitModelGroup(group, kind){
   group.userData.productKind=kind;
   group.scale.setScalar(getModelDisplaySize(kind)/maxDim);
   if(kind==='airpods') group.rotation.x=-0.08;
-  positionModelStage();
   currentModelGroup=group;
   modelStage.add(group);
+  positionModelStage();
 }
 
 function loadSelectedModel(){
@@ -1295,12 +1309,12 @@ function loadEmbeddedGLTF(token=modelLoadToken){
     group.userData.baseMaxDim=maxDim;
     group.userData.productKind='iphone';
     group.scale.setScalar(getModelDisplaySize('iphone')/maxDim);
-    positionModelStage();
 
     currentModelGroup=group;
     printableMeshes=[caseMesh0];
     colorMeshes=[caseMesh0,caseMesh1];
     modelStage.add(group);
+    positionModelStage();
 
     // Hide loading
     setLoading(false);
@@ -1576,7 +1590,7 @@ function buildModelGrid(){
       document.getElementById('sv1').textContent=m.name;
       document.getElementById('sn1').className='step-num done';
       document.getElementById('sumM').textContent=m.name;
-      document.getElementById('productTitle').innerHTML='Create Your<br><em>Custom Print</em>';
+      document.getElementById('productTitle').innerHTML='Create Your <em>Custom Print</em>';
       document.getElementById('briefPrintMode').textContent=m.kind==='airpods' ? 'Full wrap' : 'Print surface';
       fitPrintToImage(st.userImg);
       loadSelectedModel();
