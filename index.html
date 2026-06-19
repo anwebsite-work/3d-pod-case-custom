@@ -907,6 +907,7 @@ function initThree(){
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     camera.updateProjectionMatrix();
+    updateModelResponsiveScale();
   }
   resize();
   window.addEventListener('resize', resize);
@@ -930,6 +931,27 @@ function clearCurrentModel(){
   caseMesh1=null;
 }
 
+function getModelDisplaySize(kind){
+  const pane=document.querySelector('.viewer-pane');
+  const mobile=(pane?.clientWidth||window.innerWidth)<600;
+  if(mobile) return kind==='airpods' ? 1.65 : 1.85;
+  return kind==='airpods' ? 2.15 : 2.75;
+}
+
+function positionModelStage(){
+  const pane=document.querySelector('.viewer-pane');
+  const mobile=(pane?.clientWidth||window.innerWidth)<600;
+  modelStage.position.y=mobile ? -0.12 : 0;
+}
+
+function updateModelResponsiveScale(){
+  if(!currentModelGroup?.userData.baseMaxDim) return;
+  currentModelGroup.scale.setScalar(
+    getModelDisplaySize(currentModelGroup.userData.productKind)/currentModelGroup.userData.baseMaxDim
+  );
+  positionModelStage();
+}
+
 function fitModelGroup(group, kind){
   group.updateMatrixWorld(true);
   const box=new THREE.Box3().setFromObject(group);
@@ -938,8 +960,11 @@ function fitModelGroup(group, kind){
   group.updateMatrixWorld(true);
   const size=new THREE.Box3().setFromObject(group).getSize(new THREE.Vector3());
   const maxDim=Math.max(size.x,size.y,size.z);
-  group.scale.setScalar((kind==='airpods' ? 2.15 : 2.75)/maxDim);
+  group.userData.baseMaxDim=maxDim;
+  group.userData.productKind=kind;
+  group.scale.setScalar(getModelDisplaySize(kind)/maxDim);
   if(kind==='airpods') group.rotation.x=-0.08;
+  positionModelStage();
   currentModelGroup=group;
   modelStage.add(group);
 }
@@ -948,7 +973,8 @@ function loadSelectedModel(){
   const token=++modelLoadToken;
   setLoading(true, `Loading ${st.model.name}…`);
   clearCurrentModel();
-  modelStage.rotation.set(0,-0.28,0);
+  orbitState.autoCenterY=st.model.kind==='iphone17' ? -Math.PI/2+0.18 : -0.28;
+  modelStage.rotation.set(0,orbitState.autoCenterY,0);
   orbitState.userInteracted=false;
   orbitState.autoDir=1;
   camera.position.set(0,0,4.35);
@@ -1261,7 +1287,10 @@ function loadEmbeddedGLTF(token=modelLoadToken){
     // Scale to fit view
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
-    group.scale.setScalar(2.75 / maxDim);
+    group.userData.baseMaxDim=maxDim;
+    group.userData.productKind='iphone';
+    group.scale.setScalar(getModelDisplaySize('iphone')/maxDim);
+    positionModelStage();
 
     currentModelGroup=group;
     printableMeshes=[caseMesh0];
@@ -1284,7 +1313,10 @@ function animate(){
   // Auto-rotate if not interacting
   if(!orbitState.active && !orbitState.userInteracted){
     modelStage.rotation.y += 0.0012 * orbitState.autoDir;
-    if(modelStage.rotation.y>=0.38 || modelStage.rotation.y<=-0.38) orbitState.autoDir*=-1;
+    if(
+      modelStage.rotation.y>=orbitState.autoCenterY+0.38 ||
+      modelStage.rotation.y<=orbitState.autoCenterY-0.38
+    ) orbitState.autoDir*=-1;
   }
   clampSceneRotation();
   renderer.render(scene, camera);
@@ -1299,6 +1331,7 @@ const orbitState = {
   rotX:0, rotY:0,
   minX:-0.38, maxX:0.38,
   autoDir:1,
+  autoCenterY:-0.28,
   userInteracted:false,
   autoTimeout: null,
 };
