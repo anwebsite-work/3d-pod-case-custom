@@ -224,6 +224,19 @@ h1.ptitle em{color:var(--accent2);font-style:normal}
 .model-btn:hover{border-color:var(--border2);color:var(--text)}
 .model-btn.active{border-color:var(--accent);background:rgba(59,130,246,.12);color:var(--text);font-weight:600}
 
+.style-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px}
+.style-btn{
+  display:grid;gap:3px;padding:10px;border-radius:8px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);
+  font-size:11px;cursor:pointer;text-align:left;line-height:1.35;
+  transition:all .15s;font-family:inherit;
+}
+.style-btn .stn{font-weight:700;font-size:12px}
+.style-btn .stp{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.style-btn .stpr{font-weight:700;color:var(--accent2)}
+.style-btn:hover{border-color:var(--border2)}
+.style-btn.active{border-color:var(--accent);background:rgba(59,130,246,.12);font-weight:600}
+
 /* Colors */
 .color-grid{display:flex;flex-wrap:wrap;gap:7px}
 .col-btn{
@@ -511,7 +524,7 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);
 .step-num.done,.step-num.active{background:var(--accent-gradient);border-color:#E85F91;color:#fff}
 button,.ser-btn,.model-btn,.upload-main,.background-btn,.mini-btn,.btn-cart,.btn-secondary,
 .input-field{border-radius:0!important;font-family:'Space Grotesk',sans-serif}
-.ser-btn.active,.brand-btn.active,.model-btn.active,.mini-btn.active{
+.ser-btn.active,.brand-btn.active,.model-btn.active,.style-btn.active,.mini-btn.active{
   background:var(--accent-gradient);border-color:#E85F91;color:#fff;
 }
 .upload-main,.btn-cart{
@@ -674,7 +687,7 @@ input[type=range]{accent-color:#E85F91!important}
       <div class="product-badge">POD Customizer</div>
       <h1 class="ptitle" id="productTitle">Create Your <em>Custom Print</em></h1>
       <div class="pmeta" style="margin-top:10px">
-        <div class="price">$24.99</div>
+        <div class="price" id="priceDisplay">$24.99</div>
         <div class="stars">Live Preview</div>
       </div>
       <div class="trust-chips">
@@ -688,13 +701,11 @@ input[type=range]{accent-color:#E85F91!important}
     <div class="step-card">
       <div class="step-head" onclick="toggleS(1)">
         <div class="step-num done" id="sn1">1</div>
-        <span class="step-title">Product</span>
-        <span class="step-val" id="sv1">iPhone 16 Pro Max</span>
+        <span class="step-title">Case Style</span>
+        <span class="step-val" id="sv1">Tough Case</span>
       </div>
       <div class="step-body hidden" id="sb1">
-        <div class="brand-tabs" id="brandTabs"></div>
-        <div class="series-tabs" id="serTabs"></div>
-        <div class="model-grid" id="modelGrid"></div>
+        <div class="style-grid" id="styleGrid"></div>
       </div>
     </div>
 
@@ -702,22 +713,36 @@ input[type=range]{accent-color:#E85F91!important}
     <div class="step-card">
       <div class="step-head" onclick="toggleS(2)">
         <div class="step-num done" id="sn2">2</div>
-        <span class="step-title">Base Color</span>
-        <span class="step-val" id="sv2">Crystal Clear</span>
+        <span class="step-title">Product</span>
+        <span class="step-val" id="sv2">iPhone 16 Pro Max</span>
       </div>
       <div class="step-body hidden" id="sb2">
-        <div class="color-grid" id="colorGrid"></div>
+        <div class="brand-tabs" id="brandTabs"></div>
+        <div class="series-tabs" id="serTabs"></div>
+        <div class="model-grid" id="modelGrid"></div>
       </div>
     </div>
 
     <!-- Step 3 -->
-    <div class="step-card primary-step">
+    <div class="step-card">
       <div class="step-head" onclick="toggleS(3)">
-        <div class="step-num" id="sn3">3</div>
-        <span class="step-title">Artwork</span>
-        <span class="step-val" id="sv3">—</span>
+        <div class="step-num done" id="sn3">3</div>
+        <span class="step-title">Base Color</span>
+        <span class="step-val" id="sv3">Crystal Clear</span>
       </div>
       <div class="step-body hidden" id="sb3">
+        <div class="color-grid" id="colorGrid"></div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-card primary-step">
+      <div class="step-head" onclick="toggleS(4)">
+        <div class="step-num" id="sn4">4</div>
+        <span class="step-title">Artwork</span>
+        <span class="step-val" id="sv4">—</span>
+      </div>
+      <div class="step-body hidden" id="sb4">
         <div class="upload-panel">
           <div class="artwork-actions">
             <button class="upload-main" id="uploadPanelBtn" type="button">Upload Image</button>
@@ -743,12 +768,13 @@ input[type=range]{accent-color:#E85F91!important}
 
     <!-- Summary -->
     <div class="sum-card">
+      <div class="sum-row"><span class="lbl">Style</span><span class="val" id="sumStyle">Tough Case</span></div>
       <div class="sum-row"><span class="lbl">Product</span><span class="val" id="sumM">iPhone 16 Pro Max</span></div>
       <div class="sum-row"><span class="lbl">Color</span><span class="val" id="sumC">Crystal Clear</span></div>
       <div class="sum-row"><span class="lbl">Artwork</span><span class="val" id="sumD">Not uploaded</span></div>
       <div class="sum-row"><span class="lbl">Background</span><span class="val" id="sumBg">Product color</span></div>
       <div class="sum-div"></div>
-      <div class="sum-row"><span class="lbl sum-total">Total</span><span class="val sum-total">$24.99</span></div>
+      <div class="sum-row"><span class="lbl sum-total">Total</span><span class="val sum-total" id="totalPrice">$24.99</span></div>
     </div>
 
     <div class="custom-brief">
@@ -861,6 +887,23 @@ const MODELS=[
   {id:'sgs24u',name:'Galaxy S24 Ultra',brand:'samsung',s:'S24',h:162.3,w:79.0,r:12,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
   {id:'airpodspro',name:'AirPods Pro Case',brand:'airpods',s:'AirPods',h:45.2,w:60.6,r:14,asset:'airpods_pro.glb',kind:'airpods'},
 ];
+
+// Case style catalog (name / print type / base cost / compatible brands).
+// The 3D preview is shared across every style for now — these only drive
+// the step-1 selector, pricing and which brands are selectable afterwards.
+const CASE_STYLES=[
+  {id:'tough',          name:'Tough Case',              printType:'Sublimation', basecost:5.50, compatibleBrands:['iphone','samsung']},
+  {id:'magsafe-tough',  name:'Magsafe Tough Case',       printType:'Sublimation', basecost:6.50, compatibleBrands:['iphone']},
+  {id:'airpods-case',   name:'AirPods',                  printType:'Sublimation', basecost:6.50, compatibleBrands:['airpods']},
+  {id:'airpods-max',    name:'AirPods Max',              printType:'Sublimation', basecost:9.50, compatibleBrands:['airpods']},
+  {id:'airclear',       name:'AirClear',                 printType:'UV',          basecost:4.25, compatibleBrands:['iphone']},
+  {id:'clearguard',     name:'ClearGuard',                printType:'UV',          basecost:4.25, compatibleBrands:['iphone']},
+  {id:'holoframe',      name:'HoloFrame',                printType:'UV',          basecost:4.25, compatibleBrands:['iphone','samsung']},
+  {id:'magsafe-clear',  name:'Magsafe Clear Case',       printType:'UV',          basecost:5.25, compatibleBrands:['iphone','samsung']},
+  {id:'leather-wallet', name:'Leather Wallet Card Case', printType:'UV',          basecost:6.50, compatibleBrands:['iphone','samsung']},
+  {id:'phone-grip',     name:'Phone Grip',               printType:'Sublimation', basecost:4.20, compatibleBrands:['iphone','samsung']},
+];
+
 const COLORS=[
   {id:'clear', name:'Crystal Clear',hex:'#E2DED6',rim:'#C9C5BD'},
   {id:'black', name:'Midnight',      hex:'#111111',rim:'#0A0A0A'},
@@ -1106,6 +1149,7 @@ function getEligibleDesigns(){
    STATE
 ════════════════════════════════ */
 let st = {
+  style: CASE_STYLES[0],
   model: MODELS.find(m=>m.id==='ip16pm'),
   color: COLORS[0],
   userImg: null,
@@ -1932,9 +1976,55 @@ function clearDesign(){
 /* ════════════════════════════════
    UI BUILDERS
 ════════════════════════════════ */
+function buildStyleGrid(){
+  const el=document.getElementById('styleGrid');el.innerHTML='';
+  CASE_STYLES.forEach(style=>{
+    const b=document.createElement('button');
+    b.className='style-btn'+(style.id===st.style.id?' active':'');
+    b.innerHTML=`<span class="stn">${style.name}</span><span class="stp">${style.printType}</span><span class="stpr">$${style.basecost.toFixed(2)}</span>`;
+    b.onclick=()=>{
+      st.style=style;
+      document.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById('sv1').textContent=style.name;
+      document.getElementById('sn1').className='step-num done';
+      document.getElementById('sumStyle').textContent=style.name;
+      updatePriceDisplay();
+      // Switching to a style that doesn't support the current brand (e.g.
+      // AirPods-only styles) jumps to the first brand that does, then
+      // rebuilds the series/model pickers underneath it.
+      if(!style.compatibleBrands.includes(st.activeBrand)){
+        st.activeBrand=style.compatibleBrands[0];
+        st.activeSeries=MODELS.find(m=>m.brand===st.activeBrand).s;
+        st.model=MODELS.find(m=>m.brand===st.activeBrand && m.s===st.activeSeries);
+        document.getElementById('sv2').textContent=st.model.name;
+        document.getElementById('sumM').textContent=st.model.name;
+        fitPrintToImage(st.userImg);
+        loadSelectedModel();
+      }
+      updatePrintModeLabel();
+      buildBrandTabs();
+      buildSeriesTabs();
+      buildModelGrid();
+    };
+    el.appendChild(b);
+  });
+}
+
+function updatePriceDisplay(){
+  const price=`$${st.style.basecost.toFixed(2)}`;
+  document.getElementById('priceDisplay').textContent=price;
+  document.getElementById('totalPrice').textContent=price;
+}
+
+function updatePrintModeLabel(){
+  const wrap=st.model.kind==='airpods' ? 'Full wrap' : 'Print surface';
+  document.getElementById('briefPrintMode').textContent=`${st.style.printType} · ${wrap}`;
+}
+
 function buildBrandTabs(){
   const el=document.getElementById('brandTabs');el.innerHTML='';
-  BRANDS.forEach(brand=>{
+  BRANDS.filter(brand=>st.style.compatibleBrands.includes(brand.id)).forEach(brand=>{
     const b=document.createElement('button');
     b.className='brand-btn'+(brand.id===st.activeBrand?' active':'');
     b.textContent=brand.name;
@@ -1977,11 +2067,11 @@ function buildModelGrid(){
       st.model=m;
       document.querySelectorAll('.model-btn').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
-      document.getElementById('sv1').textContent=m.name;
-      document.getElementById('sn1').className='step-num done';
+      document.getElementById('sv2').textContent=m.name;
+      document.getElementById('sn2').className='step-num done';
       document.getElementById('sumM').textContent=m.name;
       document.getElementById('productTitle').innerHTML='Create Your <em>Custom Print</em>';
-      document.getElementById('briefPrintMode').textContent=m.kind==='airpods' ? 'Full wrap' : 'Print surface';
+      updatePrintModeLabel();
       fitPrintToImage(st.userImg);
       loadSelectedModel();
     };
@@ -2006,8 +2096,8 @@ function buildColors(){
       document.querySelectorAll('.cs-swatch').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       document.querySelectorAll('.cs-swatch')[i]?.classList.add('active');
-      document.getElementById('sv2').textContent=c.name;
-      document.getElementById('sn2').className='step-num done';
+      document.getElementById('sv3').textContent=c.name;
+      document.getElementById('sn3').className='step-num done';
       document.getElementById('sumC').textContent=c.name;
     };
     el.appendChild(b);
@@ -2076,8 +2166,8 @@ function setArtworkImage(img, meta){
   };
   fitPrintToImage(img);
   applyDesignToCase();
-  document.getElementById('sv3').textContent=meta.stepLabel || meta.title || 'Uploaded';
-  document.getElementById('sn3').className='step-num done';
+  document.getElementById('sv4').textContent=meta.stepLabel || meta.title || 'Uploaded';
+  document.getElementById('sn4').className='step-num done';
   document.getElementById('sumD').textContent=meta.title || '';
   document.getElementById('briefArtwork').textContent=meta.title || '';
   document.getElementById('artworkFileInfo').textContent=meta.title || '';
@@ -2218,8 +2308,8 @@ function initUpload(){
     st.artworkName='';
     st.artwork={source:null, designId:null, title:null, thumbnail:null, preview:null, printFile:null, licenseType:null};
     clearDesign();
-    document.getElementById('sv3').textContent='—';
-    document.getElementById('sn3').className='step-num active';
+    document.getElementById('sv4').textContent='—';
+    document.getElementById('sn4').className='step-num active';
     document.getElementById('sumD').textContent='Not uploaded';
     document.getElementById('briefArtwork').textContent='Not uploaded';
     document.getElementById('artworkFileInfo').textContent='Not uploaded';
@@ -2468,8 +2558,8 @@ function buildDesigns(){
         st.userImg=img; st.design=null;
         applyDesignToCase(null);
         document.querySelectorAll('.ds-thumb').forEach(x=>x.classList.remove('active'));
-        document.getElementById('sv3').textContent='Custom photo';
-        document.getElementById('sn3').className='step-num done';
+        document.getElementById('sv4').textContent='Custom photo';
+        document.getElementById('sn4').className='step-num done';
         document.getElementById('sumD').textContent='Custom photo';
         showToast('✅','Photo applied!','Drag to reposition on the 3D view');
         e.target.value='';
@@ -2537,14 +2627,14 @@ function selectDesign(id, thumbEl){
   document.querySelectorAll('.ds-thumb').forEach(x=>x.classList.remove('active'));
   if(thumbEl) thumbEl.classList.add('active');
   const def=DESIGN_DEFS.find(d=>d.id===id);
-  document.getElementById('sv3').textContent=def?.label||'—';
-  document.getElementById('sn3').className='step-num done';
+  document.getElementById('sv4').textContent=def?.label||'—';
+  document.getElementById('sn4').className='step-num done';
   document.getElementById('sumD').textContent=def?.label||'—';
 }
 
 /* Step accordion */
 function toggleS(n){
-  [1,2,3].forEach(i=>{
+  [1,2,3,4].forEach(i=>{
     const b=document.getElementById('sb'+i);
     const open = i===n && b.classList.contains('hidden');
     b.classList.toggle('hidden', !open);
@@ -2586,6 +2676,12 @@ function buildOrderPayload(){
     orderId: 'CASE-' + new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14),
     createdAt: new Date().toISOString(),
     product: st.model.kind==='airpods' ? 'Custom Full Wrap AirPods Case' : `Custom Print ${BRANDS.find(b=>b.id===st.model.brand)?.name || ''} Case`.replace(/\s+/g,' ').trim(),
+    style: {
+      id: st.style.id,
+      name: st.style.name,
+      printType: st.style.printType,
+      basecost: st.style.basecost
+    },
     model: st.model.name,
     color: st.color.name,
     design: st.userImg ? 'Custom artwork' : 'None',
@@ -2614,7 +2710,7 @@ function buildOrderPayload(){
     printTransform: {...st.print},
     customerApproved: Boolean(document.getElementById('customerApproval')?.checked),
     production: {
-      uvPrint: true,
+      uvPrint: st.style.printType==='UV',
       qualityCheck: true,
       source: 'CaseCraft Custom Studio'
     }
@@ -2664,16 +2760,19 @@ function showToast(icon,title,sub){
 /* ════════════════════════════════
    INIT
 ════════════════════════════════ */
+buildStyleGrid();
 buildBrandTabs();
 buildSeriesTabs();
 buildModelGrid();
 buildColors();
+updatePriceDisplay();
+updatePrintModeLabel();
 initUpload();
 initDesignLibrary();
 initPrintTools();
-// Step 3 open by default so uploading a custom image is immediately visible.
-document.getElementById('sb3').classList.remove('hidden');
-document.getElementById('sn3').classList.add('active');
+// Step 4 (Artwork) open by default so uploading a custom image is immediately visible.
+document.getElementById('sb4').classList.remove('hidden');
+document.getElementById('sn4').classList.add('active');
 initThree();
 </script>
 </body>
