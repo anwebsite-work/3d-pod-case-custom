@@ -202,14 +202,16 @@ h1.ptitle em{color:var(--accent2);font-style:normal}
 .step-body.hidden{display:none}
 
 /* Model selector */
+.brand-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .series-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.ser-btn{
+.ser-btn,.brand-btn{
   padding:4px 11px;border-radius:20px;border:1px solid var(--border);
   background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;
   transition:all .15s;font-family:inherit;
 }
-.ser-btn:hover{border-color:var(--border2);color:var(--text)}
-.ser-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.brand-btn{padding:6px 14px;font-size:12px;font-weight:700;border-color:var(--border2)}
+.ser-btn:hover,.brand-btn:hover{border-color:var(--border2);color:var(--text)}
+.ser-btn.active,.brand-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
 
 .model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:5px}
 .model-btn{
@@ -509,7 +511,7 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);
 .step-num.done,.step-num.active{background:var(--accent-gradient);border-color:#E85F91;color:#fff}
 button,.ser-btn,.model-btn,.upload-main,.background-btn,.mini-btn,.btn-cart,.btn-secondary,
 .input-field{border-radius:0!important;font-family:'Space Grotesk',sans-serif}
-.ser-btn.active,.model-btn.active,.mini-btn.active{
+.ser-btn.active,.brand-btn.active,.model-btn.active,.mini-btn.active{
   background:var(--accent-gradient);border-color:#E85F91;color:#fff;
 }
 .upload-main,.btn-cart{
@@ -690,6 +692,7 @@ input[type=range]{accent-color:#E85F91!important}
         <span class="step-val" id="sv1">iPhone 16 Pro Max</span>
       </div>
       <div class="step-body hidden" id="sb1">
+        <div class="brand-tabs" id="brandTabs"></div>
         <div class="series-tabs" id="serTabs"></div>
         <div class="model-grid" id="modelGrid"></div>
       </div>
@@ -828,29 +831,35 @@ input[type=range]{accent-color:#E85F91!important}
 /* ════════════════════════════════
    DATA
 ════════════════════════════════ */
+const BRANDS=[
+  {id:'iphone',  name:'iPhone'},
+  {id:'samsung', name:'Samsung'},
+  {id:'airpods', name:'AirPods'},
+];
 const MODELS=[
-  {id:'ip12m', name:'12 Mini',    s:'12',h:131.5,w:64.2, r:19,cam:'dual'},
-  {id:'ip12',  name:'iPhone 12',  s:'12',h:146.7,w:71.5, r:20,cam:'dual'},
-  {id:'ip12p', name:'12 Pro',     s:'12',h:146.7,w:71.5, r:20,cam:'triple'},
-  {id:'ip12pm',name:'12 Pro Max', s:'12',h:160.8,w:78.1, r:22,cam:'triple'},
-  {id:'ip13m', name:'13 Mini',    s:'13',h:131.5,w:64.2, r:19,cam:'dual'},
-  {id:'ip13',  name:'iPhone 13',  s:'13',h:146.7,w:71.5, r:20,cam:'dual'},
-  {id:'ip13p', name:'13 Pro',     s:'13',h:146.7,w:71.5, r:20,cam:'triple'},
-  {id:'ip13pm',name:'13 Pro Max', s:'13',h:160.8,w:78.1, r:22,cam:'triple'},
-  {id:'ip14',  name:'iPhone 14',  s:'14',h:146.7,w:71.5, r:20,cam:'dual'},
-  {id:'ip14p', name:'14 Plus',    s:'14',h:160.8,w:78.1, r:22,cam:'dual'},
-  {id:'ip14pr',name:'14 Pro',     s:'14',h:147.5,w:71.5, r:20,cam:'triple'},
-  {id:'ip14pm',name:'14 Pro Max', s:'14',h:160.7,w:77.6, r:22,cam:'triple'},
-  {id:'ip15',  name:'iPhone 15',  s:'15',h:147.6,w:71.6, r:20,cam:'dual_v'},
-  {id:'ip15p', name:'15 Plus',    s:'15',h:160.9,w:77.8, r:22,cam:'dual_v'},
-  {id:'ip15pr',name:'15 Pro',     s:'15',h:146.6,w:70.6, r:20,cam:'triple'},
-  {id:'ip15pm',name:'15 Pro Max', s:'15',h:159.9,w:76.7, r:22,cam:'triple'},
-  {id:'ip16',  name:'iPhone 16',  s:'16',h:147.6,w:71.6, r:20,cam:'dual_v'},
-  {id:'ip16p', name:'16 Plus',    s:'16',h:160.9,w:77.8, r:22,cam:'dual_v'},
-  {id:'ip16pr',name:'16 Pro',     s:'16',h:149.6,w:71.5, r:20,cam:'triple'},
-  {id:'ip16pm',name:'16 Pro Max', s:'16',h:163.0,w:77.6, r:22,cam:'triple'},
-  {id:'ip17pm',name:'iPhone 17 Pro Max',s:'17',h:163.0,w:77.6,r:22,cam:'triple',asset:'iphone_17_pro_max.glb',kind:'iphone17'},
-  {id:'airpodspro',name:'AirPods Pro Case',s:'AirPods',h:45.2,w:60.6,r:14,asset:'airpods_pro.glb',kind:'airpods'},
+  {id:'ip12m', name:'12 Mini',    brand:'iphone',s:'12',h:131.5,w:64.2, r:19,cam:'dual'},
+  {id:'ip12',  name:'iPhone 12',  brand:'iphone',s:'12',h:146.7,w:71.5, r:20,cam:'dual'},
+  {id:'ip12p', name:'12 Pro',     brand:'iphone',s:'12',h:146.7,w:71.5, r:20,cam:'triple'},
+  {id:'ip12pm',name:'12 Pro Max', brand:'iphone',s:'12',h:160.8,w:78.1, r:22,cam:'triple'},
+  {id:'ip13m', name:'13 Mini',    brand:'iphone',s:'13',h:131.5,w:64.2, r:19,cam:'dual'},
+  {id:'ip13',  name:'iPhone 13',  brand:'iphone',s:'13',h:146.7,w:71.5, r:20,cam:'dual'},
+  {id:'ip13p', name:'13 Pro',     brand:'iphone',s:'13',h:146.7,w:71.5, r:20,cam:'triple'},
+  {id:'ip13pm',name:'13 Pro Max', brand:'iphone',s:'13',h:160.8,w:78.1, r:22,cam:'triple'},
+  {id:'ip14',  name:'iPhone 14',  brand:'iphone',s:'14',h:146.7,w:71.5, r:20,cam:'dual'},
+  {id:'ip14p', name:'14 Plus',    brand:'iphone',s:'14',h:160.8,w:78.1, r:22,cam:'dual'},
+  {id:'ip14pr',name:'14 Pro',     brand:'iphone',s:'14',h:147.5,w:71.5, r:20,cam:'triple'},
+  {id:'ip14pm',name:'14 Pro Max', brand:'iphone',s:'14',h:160.7,w:77.6, r:22,cam:'triple'},
+  {id:'ip15',  name:'iPhone 15',  brand:'iphone',s:'15',h:147.6,w:71.6, r:20,cam:'dual_v'},
+  {id:'ip15p', name:'15 Plus',    brand:'iphone',s:'15',h:160.9,w:77.8, r:22,cam:'dual_v'},
+  {id:'ip15pr',name:'15 Pro',     brand:'iphone',s:'15',h:146.6,w:70.6, r:20,cam:'triple'},
+  {id:'ip15pm',name:'15 Pro Max', brand:'iphone',s:'15',h:159.9,w:76.7, r:22,cam:'triple'},
+  {id:'ip16',  name:'iPhone 16',  brand:'iphone',s:'16',h:147.6,w:71.6, r:20,cam:'dual_v'},
+  {id:'ip16p', name:'16 Plus',    brand:'iphone',s:'16',h:160.9,w:77.8, r:22,cam:'dual_v'},
+  {id:'ip16pr',name:'16 Pro',     brand:'iphone',s:'16',h:149.6,w:71.5, r:20,cam:'triple'},
+  {id:'ip16pm',name:'16 Pro Max', brand:'iphone',s:'16',h:163.0,w:77.6, r:22,cam:'triple'},
+  {id:'ip17pm',name:'iPhone 17 Pro Max',brand:'iphone',s:'17',h:163.0,w:77.6,r:22,cam:'triple',asset:'iphone_17_pro_max.glb',kind:'iphone17'},
+  {id:'sgs24u',name:'Galaxy S24 Ultra',brand:'samsung',s:'S24',h:162.3,w:79.0,r:12,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'airpodspro',name:'AirPods Pro Case',brand:'airpods',s:'AirPods',h:45.2,w:60.6,r:14,asset:'airpods_pro.glb',kind:'airpods'},
 ];
 const COLORS=[
   {id:'clear', name:'Crystal Clear',hex:'#E2DED6',rim:'#C9C5BD'},
@@ -1106,6 +1115,7 @@ let st = {
   backgroundName: '',
   print: {scale:1, rotate:0, x:0, y:0, flipX:false, flipY:false},
   bg: {scale:1, x:0, y:0},
+  activeBrand: 'iphone',
   activeSeries: '16',
   cart: 0,
 };
@@ -1316,6 +1326,11 @@ function loadExternalModel(model, token){
       });
       const printSurface=buildIphone17PrintSurface(bodyMesh);
       if(printSurface) printableMeshes.push(printSurface);
+    } else if(model.kind==='samsung'){
+      const bodyMesh=root.getObjectByName('Object_8');
+      const printSurface=buildSamsungPrintSurface(bodyMesh);
+      if(printSurface) printableMeshes.push(printSurface);
+      if(bodyMesh) colorMeshes.push(bodyMesh);
     } else if(model.kind==='airpods'){
       // The source scene also bundles the loose earbuds (sitting hidden
       // inside the closed case) and a leftover editor/camera empty. Both
@@ -1392,6 +1407,52 @@ function buildIphone17PrintSurface(bodyMesh){
   surface.name='iPhone17_PrintSurface';
   surface.position.x=0.066;
   surface.rotation.y=Math.PI/2;
+  surface.renderOrder=3;
+  bodyMesh.add(surface);
+  return surface;
+}
+
+function buildSamsungPrintSurface(bodyMesh){
+  if(!bodyMesh) return null;
+  // Object_8 (the back shell) is authored in a normalised local space: X/Y
+  // already match the device's real footprint, but Z is squashed flat
+  // (local -1..1 maps to the real ~0.26 unit thickness). A flat panel at
+  // local Z=1 sits right on the outer back face; the camera island/lenses
+  // are separate meshes that protrude further out in Z, so they occlude
+  // this panel naturally without needing a cut-out in its shape.
+  const minX=-0.93,maxX=1.0,minY=-2.2,maxY=1.96;
+  const radius=0.16;
+  const shape=new THREE.Shape();
+  shape.moveTo(minX+radius,minY);
+  shape.lineTo(maxX-radius,minY);
+  shape.quadraticCurveTo(maxX,minY,maxX,minY+radius);
+  shape.lineTo(maxX,maxY-radius);
+  shape.quadraticCurveTo(maxX,maxY,maxX-radius,maxY);
+  shape.lineTo(minX+radius,maxY);
+  shape.quadraticCurveTo(minX,maxY,minX,maxY-radius);
+  shape.lineTo(minX,minY+radius);
+  shape.quadraticCurveTo(minX,minY,minX+radius,minY);
+
+  const geometry=new THREE.ShapeGeometry(shape,12);
+  const position=geometry.getAttribute('position');
+  const uvs=new Float32Array(position.count*2);
+  for(let i=0;i<position.count;i++){
+    uvs[i*2]=(position.getX(i)-minX)/(maxX-minX);
+    uvs[i*2+1]=(position.getY(i)-minY)/(maxY-minY);
+  }
+  geometry.setAttribute('uv',new THREE.BufferAttribute(uvs,2));
+  const material=new THREE.MeshStandardMaterial({
+    color:hexToRGB(st.color.hex),
+    roughness:.48,
+    metalness:0,
+    side:THREE.FrontSide,
+    polygonOffset:true,
+    polygonOffsetFactor:-2,
+    polygonOffsetUnits:-2
+  });
+  const surface=new THREE.Mesh(geometry,material);
+  surface.name='Samsung_PrintSurface';
+  surface.position.z=1;
   surface.renderOrder=3;
   bodyMesh.add(surface);
   return surface;
@@ -1767,7 +1828,7 @@ function applyColor(col){
       if(!st.userImg) mesh.material.color=c;
       mesh.material.needsUpdate=true;
     });
-  } else if(st.model.kind==='iphone17'){
+  } else if(st.model.kind==='iphone17' || st.model.kind==='samsung'){
     colorMeshes.forEach(mesh=>{
       mesh.material.color=c;
       mesh.material.needsUpdate=true;
@@ -1871,13 +1932,31 @@ function clearDesign(){
 /* ════════════════════════════════
    UI BUILDERS
 ════════════════════════════════ */
+function buildBrandTabs(){
+  const el=document.getElementById('brandTabs');el.innerHTML='';
+  BRANDS.forEach(brand=>{
+    const b=document.createElement('button');
+    b.className='brand-btn'+(brand.id===st.activeBrand?' active':'');
+    b.textContent=brand.name;
+    b.onclick=()=>{
+      st.activeBrand=brand.id;
+      st.activeSeries=MODELS.find(m=>m.brand===brand.id).s;
+      document.querySelectorAll('.brand-btn').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      buildSeriesTabs();
+      buildModelGrid();
+    };
+    el.appendChild(b);
+  });
+}
+
 function buildSeriesTabs(){
-  const series=[...new Set(MODELS.map(m=>m.s))];
-  const el=document.getElementById('serTabs');
+  const series=[...new Set(MODELS.filter(m=>m.brand===st.activeBrand).map(m=>m.s))];
+  const el=document.getElementById('serTabs');el.innerHTML='';
   series.forEach(s=>{
     const b=document.createElement('button');
     b.className='ser-btn'+(s===st.activeSeries?' active':'');
-    b.textContent=s==='AirPods' ? 'AirPods' : 'iPhone '+s;
+    b.textContent=st.activeBrand==='iphone' ? 'iPhone '+s : s;
     b.onclick=()=>{
       st.activeSeries=s;
       document.querySelectorAll('.ser-btn').forEach(x=>x.classList.remove('active'));
@@ -1890,7 +1969,7 @@ function buildSeriesTabs(){
 
 function buildModelGrid(){
   const el=document.getElementById('modelGrid');el.innerHTML='';
-  MODELS.filter(m=>m.s===st.activeSeries).forEach(m=>{
+  MODELS.filter(m=>m.brand===st.activeBrand && m.s===st.activeSeries).forEach(m=>{
     const b=document.createElement('button');
     b.className='model-btn'+(m.id===st.model.id?' active':'');
     b.innerHTML=m.name+`<span class="msz">${m.h}&times;${m.w}mm</span>`;
@@ -2506,7 +2585,7 @@ function buildOrderPayload(){
   return {
     orderId: 'CASE-' + new Date().toISOString().replace(/[-:TZ.]/g,'').slice(0,14),
     createdAt: new Date().toISOString(),
-    product: st.model.kind==='airpods' ? 'Custom Full Wrap AirPods Case' : 'Custom Print iPhone Case',
+    product: st.model.kind==='airpods' ? 'Custom Full Wrap AirPods Case' : `Custom Print ${BRANDS.find(b=>b.id===st.model.brand)?.name || ''} Case`.replace(/\s+/g,' ').trim(),
     model: st.model.name,
     color: st.color.name,
     design: st.userImg ? 'Custom artwork' : 'None',
@@ -2585,6 +2664,7 @@ function showToast(icon,title,sub){
 /* ════════════════════════════════
    INIT
 ════════════════════════════════ */
+buildBrandTabs();
 buildSeriesTabs();
 buildModelGrid();
 buildColors();
