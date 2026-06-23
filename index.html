@@ -201,41 +201,12 @@ h1.ptitle em{color:var(--accent2);font-style:normal}
 .step-body{padding:12px 14px}
 .step-body.hidden{display:none}
 
-/* Model selector */
-.brand-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
-.series-tabs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.ser-btn,.brand-btn{
-  padding:4px 11px;border-radius:20px;border:1px solid var(--border);
-  background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;
-  transition:all .15s;font-family:inherit;
-}
-.brand-btn{padding:6px 14px;font-size:12px;font-weight:700;border-color:var(--border2)}
-.ser-btn:hover,.brand-btn:hover{border-color:var(--border2);color:var(--text)}
-.ser-btn.active,.brand-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-
-.model-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:5px}
-.model-btn{
-  padding:8px 5px;border-radius:8px;border:1px solid var(--border);
-  background:var(--surface2);color:var(--muted);
-  font-size:10px;cursor:pointer;text-align:center;line-height:1.35;
-  transition:all .15s;font-family:inherit;
-}
-.model-btn .msz{display:block;font-size:9px;opacity:.5;margin-top:1px}
-.model-btn:hover{border-color:var(--border2);color:var(--text)}
-.model-btn.active{border-color:var(--accent);background:rgba(59,130,246,.12);color:var(--text);font-weight:600}
-
-.style-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:7px}
-.style-btn{
-  display:grid;gap:3px;padding:10px;border-radius:8px;border:1px solid var(--border);
-  background:var(--surface2);color:var(--text);
-  font-size:11px;cursor:pointer;text-align:left;line-height:1.35;
-  transition:all .15s;font-family:inherit;
-}
-.style-btn .stn{font-weight:700;font-size:12px}
-.style-btn .stp{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.style-btn .stpr{font-weight:700;color:var(--accent2)}
-.style-btn:hover{border-color:var(--border2)}
-.style-btn.active{border-color:var(--accent);background:rgba(59,130,246,.12);font-weight:600}
+/* Product selector — compact dropdowns instead of tab/grid pickers */
+.select-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.select-field{display:grid;gap:4px;min-width:0}
+.select-field.wide{grid-column:1/-1}
+.select-field label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.select-field select.input-field{cursor:pointer}
 
 /* Colors */
 .color-grid{display:flex;flex-wrap:wrap;gap:7px}
@@ -522,9 +493,9 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);
 .viewer-badge span:last-child,.ctrl-hint,.color-strip label{color:#626771}
 .step-num{border-radius:0;background:#fff;color:#090A0C}
 .step-num.done,.step-num.active{background:var(--accent-gradient);border-color:#E85F91;color:#fff}
-button,.ser-btn,.model-btn,.upload-main,.background-btn,.mini-btn,.btn-cart,.btn-secondary,
+button,.upload-main,.background-btn,.mini-btn,.btn-cart,.btn-secondary,
 .input-field{border-radius:0!important;font-family:'Space Grotesk',sans-serif}
-.ser-btn.active,.brand-btn.active,.model-btn.active,.style-btn.active,.mini-btn.active{
+.mini-btn.active{
   background:var(--accent-gradient);border-color:#E85F91;color:#fff;
 }
 .upload-main,.btn-cart{
@@ -557,7 +528,6 @@ input[type=range]{accent-color:#E85F91!important}
   .step-body{padding:18px}
   .upload-panel{padding:20px}
   .print-tools{padding:16px;gap:14px}
-  .model-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
   .field-grid{gap:10px}
   .input-field{padding:11px 12px;font-size:12px}
   .sum-card,.order-card,.custom-brief{padding:18px}
@@ -701,11 +671,24 @@ input[type=range]{accent-color:#E85F91!important}
     <div class="step-card">
       <div class="step-head" onclick="toggleS(1)">
         <div class="step-num done" id="sn1">1</div>
-        <span class="step-title">Case Style</span>
-        <span class="step-val" id="sv1">Tough Case</span>
+        <span class="step-title">Product</span>
+        <span class="step-val" id="sv1">Tough Case · iPhone 16 Pro Max</span>
       </div>
       <div class="step-body hidden" id="sb1">
-        <div class="style-grid" id="styleGrid"></div>
+        <div class="select-grid">
+          <div class="select-field">
+            <label for="styleSelect">Case Style</label>
+            <select class="input-field" id="styleSelect"></select>
+          </div>
+          <div class="select-field">
+            <label for="brandSelect">Brand</label>
+            <select class="input-field" id="brandSelect"></select>
+          </div>
+          <div class="select-field wide">
+            <label for="modelSelect">Model</label>
+            <select class="input-field" id="modelSelect"></select>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -713,36 +696,22 @@ input[type=range]{accent-color:#E85F91!important}
     <div class="step-card">
       <div class="step-head" onclick="toggleS(2)">
         <div class="step-num done" id="sn2">2</div>
-        <span class="step-title">Product</span>
-        <span class="step-val" id="sv2">iPhone 16 Pro Max</span>
+        <span class="step-title">Base Color</span>
+        <span class="step-val" id="sv2">Crystal Clear</span>
       </div>
       <div class="step-body hidden" id="sb2">
-        <div class="brand-tabs" id="brandTabs"></div>
-        <div class="series-tabs" id="serTabs"></div>
-        <div class="model-grid" id="modelGrid"></div>
-      </div>
-    </div>
-
-    <!-- Step 3 -->
-    <div class="step-card">
-      <div class="step-head" onclick="toggleS(3)">
-        <div class="step-num done" id="sn3">3</div>
-        <span class="step-title">Base Color</span>
-        <span class="step-val" id="sv3">Crystal Clear</span>
-      </div>
-      <div class="step-body hidden" id="sb3">
         <div class="color-grid" id="colorGrid"></div>
       </div>
     </div>
 
-    <!-- Step 4 -->
+    <!-- Step 3 -->
     <div class="step-card primary-step">
-      <div class="step-head" onclick="toggleS(4)">
-        <div class="step-num" id="sn4">4</div>
+      <div class="step-head" onclick="toggleS(3)">
+        <div class="step-num" id="sn3">3</div>
         <span class="step-title">Artwork</span>
-        <span class="step-val" id="sv4">—</span>
+        <span class="step-val" id="sv3">—</span>
       </div>
-      <div class="step-body hidden" id="sb4">
+      <div class="step-body hidden" id="sb3">
         <div class="upload-panel">
           <div class="artwork-actions">
             <button class="upload-main" id="uploadPanelBtn" type="button">Upload Image</button>
@@ -1976,41 +1945,6 @@ function clearDesign(){
 /* ════════════════════════════════
    UI BUILDERS
 ════════════════════════════════ */
-function buildStyleGrid(){
-  const el=document.getElementById('styleGrid');el.innerHTML='';
-  CASE_STYLES.forEach(style=>{
-    const b=document.createElement('button');
-    b.className='style-btn'+(style.id===st.style.id?' active':'');
-    b.innerHTML=`<span class="stn">${style.name}</span><span class="stp">${style.printType}</span><span class="stpr">$${style.basecost.toFixed(2)}</span>`;
-    b.onclick=()=>{
-      st.style=style;
-      document.querySelectorAll('.style-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      document.getElementById('sv1').textContent=style.name;
-      document.getElementById('sn1').className='step-num done';
-      document.getElementById('sumStyle').textContent=style.name;
-      updatePriceDisplay();
-      // Switching to a style that doesn't support the current brand (e.g.
-      // AirPods-only styles) jumps to the first brand that does, then
-      // rebuilds the series/model pickers underneath it.
-      if(!style.compatibleBrands.includes(st.activeBrand)){
-        st.activeBrand=style.compatibleBrands[0];
-        st.activeSeries=MODELS.find(m=>m.brand===st.activeBrand).s;
-        st.model=MODELS.find(m=>m.brand===st.activeBrand && m.s===st.activeSeries);
-        document.getElementById('sv2').textContent=st.model.name;
-        document.getElementById('sumM').textContent=st.model.name;
-        fitPrintToImage(st.userImg);
-        loadSelectedModel();
-      }
-      updatePrintModeLabel();
-      buildBrandTabs();
-      buildSeriesTabs();
-      buildModelGrid();
-    };
-    el.appendChild(b);
-  });
-}
-
 function updatePriceDisplay(){
   const price=`$${st.style.basecost.toFixed(2)}`;
   document.getElementById('priceDisplay').textContent=price;
@@ -2022,60 +1956,88 @@ function updatePrintModeLabel(){
   document.getElementById('briefPrintMode').textContent=`${st.style.printType} · ${wrap}`;
 }
 
-function buildBrandTabs(){
-  const el=document.getElementById('brandTabs');el.innerHTML='';
-  BRANDS.filter(brand=>st.style.compatibleBrands.includes(brand.id)).forEach(brand=>{
-    const b=document.createElement('button');
-    b.className='brand-btn'+(brand.id===st.activeBrand?' active':'');
-    b.textContent=brand.name;
-    b.onclick=()=>{
-      st.activeBrand=brand.id;
-      st.activeSeries=MODELS.find(m=>m.brand===brand.id).s;
-      document.querySelectorAll('.brand-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      buildSeriesTabs();
-      buildModelGrid();
-    };
-    el.appendChild(b);
-  });
+function updateProductStepLabel(){
+  document.getElementById('sv1').textContent=`${st.style.name} · ${st.model.name}`;
+  document.getElementById('sn1').className='step-num done';
 }
 
-function buildSeriesTabs(){
+// Applies the chosen model everywhere it's reflected outside the selects
+// themselves (3D viewer, summary, brief) — shared by the brand/model
+// dropdown handlers below.
+function selectModel(model){
+  st.model=model;
+  st.activeSeries=model.s;
+  document.getElementById('sumM').textContent=model.name;
+  document.getElementById('productTitle').innerHTML='Create Your <em>Custom Print</em>';
+  updatePrintModeLabel();
+  updateProductStepLabel();
+  fitPrintToImage(st.userImg);
+  loadSelectedModel();
+}
+
+function firstModelForBrand(brandId){
+  const firstSeries=MODELS.find(m=>m.brand===brandId).s;
+  return MODELS.find(m=>m.brand===brandId && m.s===firstSeries);
+}
+
+function populateStyleSelect(){
+  const sel=document.getElementById('styleSelect');
+  sel.innerHTML=CASE_STYLES.map(style=>
+    `<option value="${style.id}">${style.name} (${style.printType}, $${style.basecost.toFixed(2)})</option>`
+  ).join('');
+  sel.value=st.style.id;
+}
+
+function populateBrandSelect(){
+  const sel=document.getElementById('brandSelect');
+  sel.innerHTML=BRANDS.filter(b=>st.style.compatibleBrands.includes(b.id))
+    .map(b=>`<option value="${b.id}">${b.name}</option>`).join('');
+  sel.value=st.activeBrand;
+}
+
+function populateModelSelect(){
+  const sel=document.getElementById('modelSelect');
   const series=[...new Set(MODELS.filter(m=>m.brand===st.activeBrand).map(m=>m.s))];
-  const el=document.getElementById('serTabs');el.innerHTML='';
-  series.forEach(s=>{
-    const b=document.createElement('button');
-    b.className='ser-btn'+(s===st.activeSeries?' active':'');
-    b.textContent=st.activeBrand==='iphone' ? 'iPhone '+s : s;
-    b.onclick=()=>{
-      st.activeSeries=s;
-      document.querySelectorAll('.ser-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      buildModelGrid();
-    };
-    el.appendChild(b);
-  });
+  sel.innerHTML=series.map(s=>{
+    const label=st.activeBrand==='iphone' ? 'iPhone '+s : s;
+    const options=MODELS.filter(m=>m.brand===st.activeBrand && m.s===s)
+      .map(m=>`<option value="${m.id}">${m.name} (${m.h}×${m.w}mm)</option>`).join('');
+    return `<optgroup label="${label}">${options}</optgroup>`;
+  }).join('');
+  sel.value=st.model.id;
 }
 
-function buildModelGrid(){
-  const el=document.getElementById('modelGrid');el.innerHTML='';
-  MODELS.filter(m=>m.brand===st.activeBrand && m.s===st.activeSeries).forEach(m=>{
-    const b=document.createElement('button');
-    b.className='model-btn'+(m.id===st.model.id?' active':'');
-    b.innerHTML=m.name+`<span class="msz">${m.h}&times;${m.w}mm</span>`;
-    b.onclick=()=>{
-      st.model=m;
-      document.querySelectorAll('.model-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      document.getElementById('sv2').textContent=m.name;
-      document.getElementById('sn2').className='step-num done';
-      document.getElementById('sumM').textContent=m.name;
-      document.getElementById('productTitle').innerHTML='Create Your <em>Custom Print</em>';
+function initProductSelects(){
+  populateStyleSelect();
+  populateBrandSelect();
+  populateModelSelect();
+  updateProductStepLabel();
+
+  document.getElementById('styleSelect').addEventListener('change', e=>{
+    st.style=CASE_STYLES.find(s=>s.id===e.target.value);
+    document.getElementById('sumStyle').textContent=st.style.name;
+    updatePriceDisplay();
+    // Switching to a style that doesn't support the current brand (e.g.
+    // AirPods-only styles) jumps to the first brand/model that does.
+    if(!st.style.compatibleBrands.includes(st.activeBrand)){
+      st.activeBrand=st.style.compatibleBrands[0];
+      selectModel(firstModelForBrand(st.activeBrand));
+      populateBrandSelect();
+      populateModelSelect();
+    } else {
       updatePrintModeLabel();
-      fitPrintToImage(st.userImg);
-      loadSelectedModel();
-    };
-    el.appendChild(b);
+      updateProductStepLabel();
+    }
+  });
+
+  document.getElementById('brandSelect').addEventListener('change', e=>{
+    st.activeBrand=e.target.value;
+    selectModel(firstModelForBrand(st.activeBrand));
+    populateModelSelect();
+  });
+
+  document.getElementById('modelSelect').addEventListener('change', e=>{
+    selectModel(MODELS.find(m=>m.id===e.target.value));
   });
 }
 
@@ -2096,8 +2058,8 @@ function buildColors(){
       document.querySelectorAll('.cs-swatch').forEach(x=>x.classList.remove('active'));
       b.classList.add('active');
       document.querySelectorAll('.cs-swatch')[i]?.classList.add('active');
-      document.getElementById('sv3').textContent=c.name;
-      document.getElementById('sn3').className='step-num done';
+      document.getElementById('sv2').textContent=c.name;
+      document.getElementById('sn2').className='step-num done';
       document.getElementById('sumC').textContent=c.name;
     };
     el.appendChild(b);
@@ -2166,8 +2128,8 @@ function setArtworkImage(img, meta){
   };
   fitPrintToImage(img);
   applyDesignToCase();
-  document.getElementById('sv4').textContent=meta.stepLabel || meta.title || 'Uploaded';
-  document.getElementById('sn4').className='step-num done';
+  document.getElementById('sv3').textContent=meta.stepLabel || meta.title || 'Uploaded';
+  document.getElementById('sn3').className='step-num done';
   document.getElementById('sumD').textContent=meta.title || '';
   document.getElementById('briefArtwork').textContent=meta.title || '';
   document.getElementById('artworkFileInfo').textContent=meta.title || '';
@@ -2308,8 +2270,8 @@ function initUpload(){
     st.artworkName='';
     st.artwork={source:null, designId:null, title:null, thumbnail:null, preview:null, printFile:null, licenseType:null};
     clearDesign();
-    document.getElementById('sv4').textContent='—';
-    document.getElementById('sn4').className='step-num active';
+    document.getElementById('sv3').textContent='—';
+    document.getElementById('sn3').className='step-num active';
     document.getElementById('sumD').textContent='Not uploaded';
     document.getElementById('briefArtwork').textContent='Not uploaded';
     document.getElementById('artworkFileInfo').textContent='Not uploaded';
@@ -2558,8 +2520,8 @@ function buildDesigns(){
         st.userImg=img; st.design=null;
         applyDesignToCase(null);
         document.querySelectorAll('.ds-thumb').forEach(x=>x.classList.remove('active'));
-        document.getElementById('sv4').textContent='Custom photo';
-        document.getElementById('sn4').className='step-num done';
+        document.getElementById('sv3').textContent='Custom photo';
+        document.getElementById('sn3').className='step-num done';
         document.getElementById('sumD').textContent='Custom photo';
         showToast('✅','Photo applied!','Drag to reposition on the 3D view');
         e.target.value='';
@@ -2627,14 +2589,14 @@ function selectDesign(id, thumbEl){
   document.querySelectorAll('.ds-thumb').forEach(x=>x.classList.remove('active'));
   if(thumbEl) thumbEl.classList.add('active');
   const def=DESIGN_DEFS.find(d=>d.id===id);
-  document.getElementById('sv4').textContent=def?.label||'—';
-  document.getElementById('sn4').className='step-num done';
+  document.getElementById('sv3').textContent=def?.label||'—';
+  document.getElementById('sn3').className='step-num done';
   document.getElementById('sumD').textContent=def?.label||'—';
 }
 
 /* Step accordion */
 function toggleS(n){
-  [1,2,3,4].forEach(i=>{
+  [1,2,3].forEach(i=>{
     const b=document.getElementById('sb'+i);
     const open = i===n && b.classList.contains('hidden');
     b.classList.toggle('hidden', !open);
@@ -2760,19 +2722,16 @@ function showToast(icon,title,sub){
 /* ════════════════════════════════
    INIT
 ════════════════════════════════ */
-buildStyleGrid();
-buildBrandTabs();
-buildSeriesTabs();
-buildModelGrid();
+initProductSelects();
 buildColors();
 updatePriceDisplay();
 updatePrintModeLabel();
 initUpload();
 initDesignLibrary();
 initPrintTools();
-// Step 4 (Artwork) open by default so uploading a custom image is immediately visible.
-document.getElementById('sb4').classList.remove('hidden');
-document.getElementById('sn4').classList.add('active');
+// Step 3 (Artwork) open by default so uploading a custom image is immediately visible.
+document.getElementById('sb3').classList.remove('hidden');
+document.getElementById('sn3').classList.add('active');
 initThree();
 </script>
 </body>
