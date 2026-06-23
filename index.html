@@ -854,32 +854,36 @@ const MODELS=[
   {id:'ip16pm',name:'16 Pro Max', brand:'iphone',s:'16',h:163.0,w:77.6, r:22,cam:'triple'},
   {id:'ip17pm',name:'iPhone 17 Pro Max',brand:'iphone',s:'17',h:163.0,w:77.6,r:22,cam:'triple',asset:'iphone_17_pro_max.glb',kind:'iphone17'},
   // Samsung Galaxy S21-S26, matching the iPhone series' range. Only the S24
-  // Ultra has a dedicated 3D asset for now — the rest share the same generic
-  // embedded case shape the non-flagship iPhones use (loadEmbeddedGLTF).
-  {id:'s21',   name:'Galaxy S21',       brand:'samsung',s:'S21',h:151.7,w:71.2,r:18,cam:'triple'},
-  {id:'s21p',  name:'Galaxy S21+',      brand:'samsung',s:'S21',h:161.5,w:75.6,r:20,cam:'triple'},
-  {id:'s21u',  name:'Galaxy S21 Ultra', brand:'samsung',s:'S21',h:165.1,w:75.6,r:20,cam:'quad'},
-  {id:'s21fe', name:'Galaxy S21 FE',    brand:'samsung',s:'S21',h:155.7,w:74.5,r:19,cam:'triple'},
-  {id:'s22',   name:'Galaxy S22',       brand:'samsung',s:'S22',h:146.0,w:70.6,r:18,cam:'triple'},
-  {id:'s22p',  name:'Galaxy S22+',      brand:'samsung',s:'S22',h:157.4,w:75.8,r:20,cam:'triple'},
-  {id:'s22u',  name:'Galaxy S22 Ultra', brand:'samsung',s:'S22',h:163.3,w:77.9,r:20,cam:'quad'},
-  {id:'s23',   name:'Galaxy S23',       brand:'samsung',s:'S23',h:146.3,w:70.9,r:18,cam:'triple'},
-  {id:'s23p',  name:'Galaxy S23+',      brand:'samsung',s:'S23',h:157.8,w:76.2,r:20,cam:'triple'},
-  {id:'s23u',  name:'Galaxy S23 Ultra', brand:'samsung',s:'S23',h:163.4,w:78.1,r:20,cam:'quad'},
-  {id:'s23fe', name:'Galaxy S23 FE',    brand:'samsung',s:'S23',h:158.0,w:76.5,r:19,cam:'triple'},
-  {id:'s24',   name:'Galaxy S24',       brand:'samsung',s:'S24',h:147.0,w:70.6,r:18,cam:'triple'},
-  {id:'s24p',  name:'Galaxy S24+',      brand:'samsung',s:'S24',h:158.5,w:75.9,r:20,cam:'triple'},
+  // None of these have their own 3D scan, so every Samsung entry reuses the
+  // one real Samsung asset (samsung_s24_ultra.glb) rather than falling back
+  // to loadEmbeddedGLTF() — that fallback shape is an iPhone-style case, so
+  // using it here would show an Apple-shaped camera island on a "Samsung"
+  // selection. Reusing the Samsung asset at least keeps the silhouette and
+  // camera layout brand-correct even when the exact mm size doesn't match.
+  {id:'s21',   name:'Galaxy S21',       brand:'samsung',s:'S21',h:151.7,w:71.2,r:18,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s21p',  name:'Galaxy S21+',      brand:'samsung',s:'S21',h:161.5,w:75.6,r:20,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s21u',  name:'Galaxy S21 Ultra', brand:'samsung',s:'S21',h:165.1,w:75.6,r:20,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s21fe', name:'Galaxy S21 FE',    brand:'samsung',s:'S21',h:155.7,w:74.5,r:19,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s22',   name:'Galaxy S22',       brand:'samsung',s:'S22',h:146.0,w:70.6,r:18,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s22p',  name:'Galaxy S22+',      brand:'samsung',s:'S22',h:157.4,w:75.8,r:20,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s22u',  name:'Galaxy S22 Ultra', brand:'samsung',s:'S22',h:163.3,w:77.9,r:20,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s23',   name:'Galaxy S23',       brand:'samsung',s:'S23',h:146.3,w:70.9,r:18,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s23p',  name:'Galaxy S23+',      brand:'samsung',s:'S23',h:157.8,w:76.2,r:20,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s23u',  name:'Galaxy S23 Ultra', brand:'samsung',s:'S23',h:163.4,w:78.1,r:20,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s23fe', name:'Galaxy S23 FE',    brand:'samsung',s:'S23',h:158.0,w:76.5,r:19,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s24',   name:'Galaxy S24',       brand:'samsung',s:'S24',h:147.0,w:70.6,r:18,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s24p',  name:'Galaxy S24+',      brand:'samsung',s:'S24',h:158.5,w:75.9,r:20,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
   {id:'sgs24u',name:'Galaxy S24 Ultra', brand:'samsung',s:'S24',h:162.3,w:79.0,r:12,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
-  {id:'s24fe', name:'Galaxy S24 FE',    brand:'samsung',s:'S24',h:161.3,w:76.6,r:19,cam:'triple'},
-  {id:'s25',   name:'Galaxy S25',       brand:'samsung',s:'S25',h:146.9,w:70.5,r:18,cam:'triple'},
-  {id:'s25p',  name:'Galaxy S25+',      brand:'samsung',s:'S25',h:158.4,w:75.8,r:20,cam:'triple'},
-  {id:'s25u',  name:'Galaxy S25 Ultra', brand:'samsung',s:'S25',h:162.8,w:77.6,r:20,cam:'quad'},
-  {id:'s25e',  name:'Galaxy S25 Edge',  brand:'samsung',s:'S25',h:158.2,w:75.6,r:20,cam:'dual'},
+  {id:'s24fe', name:'Galaxy S24 FE',    brand:'samsung',s:'S24',h:161.3,w:76.6,r:19,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s25',   name:'Galaxy S25',       brand:'samsung',s:'S25',h:146.9,w:70.5,r:18,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s25p',  name:'Galaxy S25+',      brand:'samsung',s:'S25',h:158.4,w:75.8,r:20,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s25u',  name:'Galaxy S25 Ultra', brand:'samsung',s:'S25',h:162.8,w:77.6,r:20,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s25e',  name:'Galaxy S25 Edge',  brand:'samsung',s:'S25',h:158.2,w:75.6,r:20,cam:'dual',asset:'samsung_s24_ultra.glb',kind:'samsung'},
   // S26 specs estimated/extrapolated from the S21-S25 trend — confirm against
   // official Samsung dimensions once available.
-  {id:'s26',   name:'Galaxy S26',       brand:'samsung',s:'S26',h:147.0,w:70.5,r:18,cam:'triple'},
-  {id:'s26p',  name:'Galaxy S26+',      brand:'samsung',s:'S26',h:158.4,w:75.8,r:20,cam:'triple'},
-  {id:'s26u',  name:'Galaxy S26 Ultra', brand:'samsung',s:'S26',h:163.0,w:77.8,r:20,cam:'quad'},
+  {id:'s26',   name:'Galaxy S26',       brand:'samsung',s:'S26',h:147.0,w:70.5,r:18,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s26p',  name:'Galaxy S26+',      brand:'samsung',s:'S26',h:158.4,w:75.8,r:20,cam:'triple',asset:'samsung_s24_ultra.glb',kind:'samsung'},
+  {id:'s26u',  name:'Galaxy S26 Ultra', brand:'samsung',s:'S26',h:163.0,w:77.8,r:20,cam:'quad',asset:'samsung_s24_ultra.glb',kind:'samsung'},
   {id:'airpodspro',name:'AirPods Pro Case',brand:'airpods',s:'AirPods',h:45.2,w:60.6,r:14,asset:'airpods_pro.glb',kind:'airpods'},
 ];
 
