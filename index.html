@@ -257,20 +257,58 @@ h1.ptitle em{color:var(--accent2);font-style:normal}
 .background-btn:hover{border-color:var(--accent);background:rgba(59,130,246,.1)}
 .background-btn.clear{color:var(--muted)}
 .background-status{grid-column:1/-1;font-size:10px;color:var(--muted);text-align:center}
-.artwork-actions{display:grid;grid-template-columns:1fr auto;gap:7px}
+.artwork-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.artwork-actions .clear{grid-column:1/-1}
 .artwork-meta{
   border:1px solid var(--border);background:#fff;padding:10px;
   display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;
 }
+.artwork-meta div:nth-child(3){grid-column:1/-1}
 .artwork-meta div{display:grid;gap:2px;min-width:0}
 .artwork-meta span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .artwork-meta strong{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.print-tools{
-  display:grid;grid-template-columns:1fr 1fr;gap:8px;
-  border:1px solid var(--border);background:rgba(255,255,255,.025);
-  border-radius:10px;padding:10px;margin-top:10px;
+.pt-toggle{
+  position:absolute;left:50%;bottom:60px;transform:translateX(-50%);
+  z-index:5;
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--border2);background:rgba(20,22,27,.88);
+  backdrop-filter:blur(14px);color:var(--text);
+  border-radius:30px;padding:9px 16px;font:600 12px inherit;cursor:pointer;
 }
-.tool-control{display:flex;flex-direction:column;gap:5px}
+.pt-toggle.collapsed{display:none}
+.print-tools{
+  position:absolute;left:50%;bottom:60px;transform:translateX(-50%);
+  z-index:5;width:min(420px,92vw);box-sizing:border-box;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;
+  border:1px solid var(--border);background:rgba(20,22,27,.88);
+  backdrop-filter:blur(14px);
+  border-radius:10px;padding:10px;
+}
+.print-tools.collapsed{display:none}
+@media(min-width:860px){
+  /* Dock to the side on wide screens so it never sits on top of the case. */
+  .pt-toggle,.print-tools{
+    left:auto;right:22px;bottom:auto;top:50%;transform:translateY(-50%);
+  }
+  .print-tools{width:min(260px,24vw);grid-template-columns:minmax(0,1fr)}
+  .pt-panel{grid-template-columns:minmax(0,1fr)}
+}
+.pt-head{
+  grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;font-weight:600;color:var(--text);margin-bottom:2px;
+}
+.pt-head button{border:none;background:transparent;color:var(--muted);font-size:14px;cursor:pointer;line-height:1;padding:2px}
+.pt-tabs{grid-column:1/-1;display:flex;gap:6px;margin-bottom:2px}
+.pt-tab{
+  flex:1;border:1px solid var(--border2);background:transparent;color:var(--muted);
+  border-radius:7px;padding:6px 0;font-size:11px;font-family:inherit;cursor:pointer;
+}
+.pt-tab.active{border-color:var(--accent);background:rgba(79,131,241,.12);color:var(--text);font-weight:600}
+.pt-panel{
+  grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;
+}
+.pt-panel.collapsed{display:none}
+.tool-control{display:flex;flex-direction:column;gap:5px;min-width:0}
 .tool-control label{
   display:flex;justify-content:space-between;
   font-size:10px;color:var(--muted);
@@ -282,6 +320,76 @@ h1.ptitle em{color:var(--accent2);font-style:normal}
   border-radius:7px;padding:6px 9px;font-size:11px;font-family:inherit;cursor:pointer;
 }
 .mini-btn.active{border-color:var(--accent2);background:rgba(245,158,11,.12)}
+
+/* Design Library popup */
+.design-library-modal{position:fixed;inset:0;z-index:9999;display:none}
+.design-library-modal.is-open{display:block}
+.design-library-modal__overlay{position:absolute;inset:0;background:rgba(9,10,12,.6)}
+.design-library-modal__panel{
+  position:absolute;inset:24px;max-width:1080px;margin:auto;
+  background:var(--surface);color:var(--text);
+  border:1px solid var(--text);box-shadow:6px 6px 0 var(--text);
+  border-radius:var(--radius);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.design-library-modal__header{
+  display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+  padding:18px;border-bottom:1px solid var(--border);
+}
+.design-library-modal__header h2{margin:0;font-size:19px;font-family:'Oxanium','Bebas Neue',sans-serif}
+.design-library-modal__header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.design-library-modal__close{
+  width:32px;height:32px;border:1px solid var(--border2);background:var(--surface);
+  color:var(--text);font-size:18px;line-height:1;cursor:pointer;flex-shrink:0;font-family:inherit;
+}
+.design-library-modal__filters{padding:14px 18px;border-bottom:1px solid var(--border)}
+.design-library-modal__search{
+  width:100%;border:1px solid var(--border2);background:var(--surface2);color:var(--text);
+  padding:10px 12px;font-family:inherit;font-size:13px;outline:none;
+}
+.design-library-modal__search:focus{border-color:var(--accent)}
+.design-library-modal__chips{display:flex;gap:6px;overflow-x:auto;padding-top:10px}
+.design-library-chip{
+  border:1px solid var(--border2);background:var(--surface);color:var(--muted);
+  padding:6px 11px;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;font-family:inherit;
+}
+.design-library-chip.is-active{background:var(--accent-gradient,var(--accent));border-color:var(--accent);color:#fff}
+.design-library-modal__grid{
+  padding:18px;overflow-y:auto;flex:1;
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;
+  align-content:start;
+}
+.design-card{
+  display:block;
+  border:1px solid var(--border);background:var(--surface);cursor:pointer;text-align:left;padding:0;font-family:inherit;
+}
+.design-card:hover{border-color:var(--accent)}
+.design-card.is-selected{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
+.design-card__image-wrap{aspect-ratio:1/1;background:var(--surface2)}
+.design-card__image{width:100%;height:100%;object-fit:cover;display:block}
+.design-card__body{padding:9px}
+.design-card__title{font-weight:700;font-size:12px;line-height:1.3}
+.design-card__meta{font-size:10.5px;color:var(--muted);margin-top:3px}
+.design-library-empty{grid-column:1/-1;text-align:center;padding:50px 16px;color:var(--muted)}
+.design-library-modal__footer{
+  display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:14px 18px;border-top:1px solid var(--border);
+}
+.design-library-modal__selected{font-weight:700;font-size:12px}
+.design-library-modal__footer-actions{display:flex;gap:8px}
+.design-library-modal__secondary,.design-library-modal__primary{
+  border:1px solid var(--border2);border-radius:0;padding:10px 14px;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;
+}
+.design-library-modal__secondary{background:var(--surface);color:var(--text)}
+.design-library-modal__primary{border-color:var(--text);background:var(--accent-gradient,var(--text));color:#fff}
+.design-library-modal__primary:disabled{opacity:.4;cursor:not-allowed}
+@media(max-width:767px){
+  .design-library-modal__panel{inset:0;border-radius:0}
+  .design-library-modal__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:14px}
+  .design-library-modal__footer{position:sticky;bottom:0;flex-direction:column;align-items:stretch}
+  .design-library-modal__footer-actions{width:100%}
+  .design-library-modal__secondary,.design-library-modal__primary{flex:1}
+}
 
 /* Summary */
 .sum-card{
@@ -382,10 +490,11 @@ html,body{font-family:'Space Grotesk',system-ui,sans-serif;background:var(--bg);
 .cart-mini{border-radius:0;background:#fff}
 .viewer-pane{
   background:
+    radial-gradient(ellipse 38% 7% at 50% 84%, rgba(9,10,12,.16), transparent 70%),
     linear-gradient(90deg,rgba(0,0,0,.035) 1px,transparent 1px),
     linear-gradient(rgba(0,0,0,.035) 1px,transparent 1px),
     #F8F9FA;
-  background-size:32px 32px;
+  background-size:100% 100%,32px 32px,32px 32px;
 }
 .info-pane{background:#ECEEF1;border-left:1px solid #D8DADF}
 .product-header,.step-card,.sum-card,.order-card,.print-tools,.upload-panel,
@@ -441,7 +550,7 @@ input[type=range]{accent-color:#E85F91!important}
 @media(max-width:859px){
   .hdr{height:52px;padding:0 12px}
   .hdr-badge{font-size:9px;padding:3px 6px}
-  .viewer-pane{min-height:310px;height:42vh;max-height:390px}
+  .viewer-pane{flex:none;min-height:520px;height:calc(100vh - 52px);height:calc(100dvh - 52px);max-height:none}
   .info-pane{padding:12px;gap:10px}
   .product-header{padding:14px}
   h1.ptitle{font-size:clamp(25px,7.2vw,31px);line-height:1.08;margin-top:8px;text-wrap:pretty}
@@ -450,7 +559,7 @@ input[type=range]{accent-color:#E85F91!important}
   .step-head{padding:11px 12px}
   .step-body{padding:12px}
   .upload-panel{padding:12px}
-  .print-tools{grid-template-columns:1fr;gap:10px}
+  .print-tools{grid-template-columns:minmax(0,1fr);gap:10px}
   .tool-actions{grid-column:1}
   .brief-grid,.field-grid{grid-template-columns:1fr}
   .field-grid .wide{grid-column:1}
@@ -495,6 +604,59 @@ input[type=range]{accent-color:#E85F91!important}
       <div class="viewer-badge"><span>UV</span><div><strong>UV Print</strong><span>Fade resistant</span></div></div>
       <div class="viewer-badge"><span>POD</span><div><strong>Made to Order</strong><span>Custom production</span></div></div>
       <div class="viewer-badge"><span>SSL</span><div><strong>Secure</strong><span>SSL checkout</span></div></div>
+    </div>
+
+    <!-- Print position/size toggle + controls, overlaid on the preview so customers can adjust while watching the case -->
+    <button class="pt-toggle collapsed" id="ptToggle" type="button">🎯 Adjust position &amp; size</button>
+    <div class="print-tools" id="printTools">
+      <div class="pt-head">
+        <span>Adjust print</span>
+        <button type="button" id="ptClose" aria-label="Close">✕</button>
+      </div>
+      <div class="pt-tabs">
+        <button type="button" class="pt-tab active" id="ptTabArt">Artwork</button>
+        <button type="button" class="pt-tab" id="ptTabBg">Background</button>
+      </div>
+      <div class="pt-panel" id="ptArtPanel">
+        <div class="tool-control">
+          <label>Scale <span id="ptScaleVal">100%</span></label>
+          <input type="range" id="ptScale" min="15" max="220" value="100">
+        </div>
+        <div class="tool-control">
+          <label>Rotate <span id="ptRotateVal">0°</span></label>
+          <input type="range" id="ptRotate" min="-180" max="180" value="0">
+        </div>
+        <div class="tool-control">
+          <label>Move X <span id="ptXVal">0</span></label>
+          <input type="range" id="ptX" min="-220" max="220" value="0">
+        </div>
+        <div class="tool-control">
+          <label>Move Y <span id="ptYVal">0</span></label>
+          <input type="range" id="ptY" min="-260" max="260" value="0">
+        </div>
+        <div class="tool-actions">
+          <button class="mini-btn" id="ptFlipX" type="button">Flip X</button>
+          <button class="mini-btn" id="ptFlipY" type="button">Flip Y</button>
+          <button class="mini-btn" id="ptReset" type="button">Reset</button>
+        </div>
+      </div>
+      <div class="pt-panel collapsed" id="ptBgPanel">
+        <div class="tool-control">
+          <label>Scale <span id="pbScaleVal">100%</span></label>
+          <input type="range" id="pbScale" min="50" max="300" value="100">
+        </div>
+        <div class="tool-control">
+          <label>Move X <span id="pbXVal">0</span></label>
+          <input type="range" id="pbX" min="-260" max="260" value="0">
+        </div>
+        <div class="tool-control">
+          <label>Move Y <span id="pbYVal">0</span></label>
+          <input type="range" id="pbY" min="-300" max="300" value="0">
+        </div>
+        <div class="tool-actions">
+          <button class="mini-btn" id="pbReset" type="button">Reset background</button>
+        </div>
+      </div>
     </div>
 
     <!-- Controls hint -->
@@ -556,42 +718,21 @@ input[type=range]{accent-color:#E85F91!important}
         <div class="upload-panel">
           <div class="artwork-actions">
             <button class="upload-main" id="uploadPanelBtn" type="button">Upload Image</button>
+            <button class="upload-main" id="openDesignLibraryBtn" type="button">Choose From Library</button>
             <button class="background-btn clear" id="clearArtworkBtn" type="button" disabled>Remove</button>
           </div>
           <input class="upload-input" type="file" id="fileUploadPanel3d" accept="image/*">
           <div class="artwork-meta">
             <div><span>File</span><strong id="artworkFileInfo">Not uploaded</strong></div>
             <div><span>Size</span><strong id="artworkSizeInfo">—</strong></div>
+            <div><span>Source</span><strong id="artworkSourceInfo">—</strong></div>
           </div>
-          <div class="upload-copy">Adjust the artwork below. Add an optional background if needed.</div>
+          <div class="upload-copy">Use the scale, rotate and move controls on the case preview above to adjust your artwork. Add an optional background if needed.</div>
           <div class="background-tools">
             <button class="background-btn" id="uploadBackgroundBtn" type="button">Upload Background</button>
             <button class="background-btn clear" id="clearBackgroundBtn" type="button" disabled>Remove</button>
             <input class="upload-input" type="file" id="fileUploadBackground" accept="image/*">
             <div class="background-status" id="backgroundStatus">Background: product color</div>
-          </div>
-        </div>
-        <div class="print-tools" id="printTools">
-          <div class="tool-control">
-            <label>Scale <span id="ptScaleVal">100%</span></label>
-            <input type="range" id="ptScale" min="15" max="220" value="100">
-          </div>
-          <div class="tool-control">
-            <label>Rotate <span id="ptRotateVal">0°</span></label>
-            <input type="range" id="ptRotate" min="-180" max="180" value="0">
-          </div>
-          <div class="tool-control">
-            <label>Move X <span id="ptXVal">0</span></label>
-            <input type="range" id="ptX" min="-220" max="220" value="0">
-          </div>
-          <div class="tool-control">
-            <label>Move Y <span id="ptYVal">0</span></label>
-            <input type="range" id="ptY" min="-260" max="260" value="0">
-          </div>
-          <div class="tool-actions">
-            <button class="mini-btn" id="ptFlipX" type="button">Flip X</button>
-            <button class="mini-btn active" id="ptFlipY" type="button">Flip Y</button>
-            <button class="mini-btn" id="ptReset" type="button">Reset</button>
           </div>
         </div>
       </div>
@@ -640,6 +781,37 @@ input[type=range]{accent-color:#E85F91!important}
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- Design Library popup -->
+<div class="design-library-modal" id="designLibraryModal" aria-hidden="true">
+  <div class="design-library-modal__overlay" data-close-design-library></div>
+
+  <div class="design-library-modal__panel" role="dialog" aria-modal="true" aria-labelledby="designLibraryTitle">
+    <div class="design-library-modal__header">
+      <div>
+        <h2 id="designLibraryTitle">Choose a Design</h2>
+        <p>Pick a ready-made design and apply it to your case.</p>
+      </div>
+      <button type="button" class="design-library-modal__close" data-close-design-library aria-label="Close">×</button>
+    </div>
+
+    <div class="design-library-modal__filters">
+      <input type="search" id="designLibrarySearch" class="design-library-modal__search" placeholder="Search designs...">
+      <div class="design-library-modal__chips" id="designThemeChips"></div>
+      <div class="design-library-modal__chips" id="designStyleChips"></div>
+    </div>
+
+    <div class="design-library-modal__grid" id="designLibraryGrid"></div>
+
+    <div class="design-library-modal__footer">
+      <div class="design-library-modal__selected" id="designLibrarySelectedText">No design selected</div>
+      <div class="design-library-modal__footer-actions">
+        <button type="button" class="design-library-modal__secondary" data-close-design-library>Cancel</button>
+        <button type="button" class="design-library-modal__primary" id="useSelectedDesignBtn" disabled>Use This Design</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -847,6 +1019,81 @@ const DESIGN_DEFS = [
 ];
 
 /* ════════════════════════════════
+   DESIGN LIBRARY ("Choose From Library")
+   Local hardcoded array standing in for a future Shopify Metaobject /
+   admin-managed library. Each entry carries thumbnail (grid), preview
+   (applied to the case) and printFile (would be the production-res file)
+   — here all three reuse one generated placeholder image.
+════════════════════════════════ */
+function libraryArt(emoji, c1, c2, w, h){
+  return makeDesignCanvas((ctx,cw,ch)=>{
+    const g=ctx.createLinearGradient(0,0,cw,ch);
+    g.addColorStop(0,c1); g.addColorStop(1,c2);
+    ctx.fillStyle=g; ctx.fillRect(0,0,cw,ch);
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font=`${Math.min(cw,ch)*.42}px "Segoe UI Emoji","Apple Color Emoji",sans-serif`;
+    ctx.fillText(emoji, cw/2, ch*.46);
+    gloss(ctx,cw,ch);
+  }, w, h).toDataURL('image/png');
+}
+function libraryDesignImages(emoji, c1, c2){
+  // thumbnail stays square for the grid card; preview/printFile match the
+  // phone print canvas aspect (getPrintCanvasSize) so "contain" fit fills
+  // the back edge-to-edge instead of leaving flat colour bars top/bottom.
+  return {
+    thumbnail: libraryArt(emoji, c1, c2, 320, 320),
+    preview:   libraryArt(emoji, c1, c2, 512, 700),
+    printFile: libraryArt(emoji, c1, c2, 512, 700)
+  };
+}
+
+const DESIGN_LIBRARY = [
+  {
+    id:'july4-eagle-001', title:'Retro Eagle USA', theme:'Independence Day', style:'Vintage',
+    productTypes:['phone-case','airpods-case'], tags:['usa','eagle','flag','family'],
+    ...libraryDesignImages('🦅','#1B2A52','#C0192B'),
+    status:'published', commercialAllowed:true, licenseType:'created-in-house'
+  },
+  {
+    id:'christmas-family-001', title:'Christmas Family Crew', theme:'Christmas', style:'Cute',
+    productTypes:['phone-case'], tags:['family','holiday','matching'],
+    ...libraryDesignImages('🎄','#0F3D24','#C0192B'),
+    status:'published', commercialAllowed:true, licenseType:'licensed-asset'
+  },
+  {
+    id:'dog-mom-pastel-001', title:'Dog Mom Pastel Heart', theme:'Pet Lover', style:'Cute',
+    productTypes:['phone-case','airpods-case'], tags:['dog','mom','pastel','heart'],
+    ...libraryDesignImages('🐶','#F3D2DE','#C5B8E8'),
+    status:'published', commercialAllowed:true, licenseType:'ai-generated-reviewed'
+  },
+  {
+    id:'hidden-test-001', title:'Hidden Test Design', theme:'Test', style:'Minimal',
+    productTypes:['phone-case'], tags:['hidden'],
+    ...libraryDesignImages('🚫','#3A3A3A','#1B1B1B'),
+    status:'hidden', commercialAllowed:true, licenseType:'test'
+  },
+  {
+    id:'blocked-license-001', title:'Blocked License Design', theme:'Test', style:'Minimal',
+    productTypes:['phone-case'], tags:['blocked'],
+    ...libraryDesignImages('⛔','#3A3A3A','#1B1B1B'),
+    status:'published', commercialAllowed:false, licenseType:'not-for-commercial-use'
+  }
+];
+
+function getCurrentProductType(){
+  return st.model?.kind==='airpods' ? 'airpods-case' : 'phone-case';
+}
+
+function getEligibleDesigns(){
+  const productType=getCurrentProductType();
+  return DESIGN_LIBRARY.filter(d=>
+    d.status==='published' &&
+    d.commercialAllowed===true &&
+    d.productTypes.includes(productType)
+  );
+}
+
+/* ════════════════════════════════
    STATE
 ════════════════════════════════ */
 let st = {
@@ -854,9 +1101,11 @@ let st = {
   color: COLORS[0],
   userImg: null,
   artworkName: '',
+  artwork: {source:null, designId:null, title:null, thumbnail:null, preview:null, printFile:null, licenseType:null},
   backgroundImg: null,
   backgroundName: '',
-  print: {scale:1, rotate:0, x:0, y:0, flipX:false, flipY:true},
+  print: {scale:1, rotate:0, x:0, y:0, flipX:false, flipY:false},
+  bg: {scale:1, x:0, y:0},
   activeSeries: '16',
   cart: 0,
 };
@@ -874,6 +1123,30 @@ let modelLoadToken = 0;
 let designTexture = null;
 let animRAF = null;
 
+// Procedural studio environment (no external HDRI/network fetch needed) so
+// metal (camera frame) and glass (Crystal Clear transmission) materials
+// pick up soft reflections instead of rendering as flat dull plastic.
+function buildStudioEnvironment(renderer){
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  const envScene = new THREE.Scene();
+  envScene.background = new THREE.Color(0x14161b);
+  const geo = new THREE.BoxGeometry(1, 1, 1);
+  const addPanel = (color, pos, scale)=>{
+    const mesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color}));
+    mesh.position.copy(pos);
+    mesh.scale.copy(scale);
+    envScene.add(mesh);
+  };
+  addPanel(0xffffff, new THREE.Vector3(0, 6, 1),  new THREE.Vector3(10, 0.2, 10)); // soft ceiling highlight
+  addPanel(0xcfe0ff, new THREE.Vector3(-6, 0, 2), new THREE.Vector3(0.2, 8, 8));   // cool key light, left
+  addPanel(0xffe6c8, new THREE.Vector3(6, -1, -2), new THREE.Vector3(0.2, 8, 8));  // warm rim light, right
+  const renderTarget = pmrem.fromScene(envScene, 0.05);
+  pmrem.dispose();
+  envScene.traverse(obj=>{ if(obj.isMesh){ obj.geometry.dispose(); obj.material.dispose(); } });
+  return renderTarget.texture;
+}
+
 function initThree(){
   const canvas = document.getElementById('threeCanvas');
   const pane   = canvas.parentElement;
@@ -887,6 +1160,11 @@ function initThree(){
   scene = new THREE.Scene();
   modelStage = new THREE.Group();
   scene.add(modelStage);
+
+  // Image-based lighting so metallic/glass case materials have something to
+  // reflect — without it MeshStandardMaterial/MeshPhysicalMaterial read as
+  // flat, dull plastic no matter how many direct lights are added.
+  scene.environment = buildStudioEnvironment(renderer);
 
   // Camera
   camera = new THREE.PerspectiveCamera(40, 1, 0.01, 100);
@@ -1039,6 +1317,14 @@ function loadExternalModel(model, token){
       const printSurface=buildIphone17PrintSurface(bodyMesh);
       if(printSurface) printableMeshes.push(printSurface);
     } else if(model.kind==='airpods'){
+      // The source scene also bundles the loose earbuds (sitting hidden
+      // inside the closed case) and a leftover editor/camera empty. Both
+      // carry real geometry that skews the bounding box used to centre and
+      // scale the model, so drop them rather than just hiding them.
+      ['Airpods','CINEMA_4D_Editor'].forEach(name=>{
+        const node=root.getObjectByName(name);
+        node?.parent?.remove(node);
+      });
       const caseRoot=root.getObjectByName('Case_1') || root;
       const outerShellNames=new Set(['Boole_1_Mat1_0','Boole_2_Mat1_0']);
       caseRoot.traverse(obj=>{
@@ -1237,8 +1523,29 @@ function loadEmbeddedGLTF(token=modelLoadToken){
       return geo;
     }
 
+    // The source model's UV unwrap packs the case body into a sub-rectangle of
+    // the shared texture atlas (roughly U 0.49-0.96, V 0.03-0.97) rather than
+    // the full 0-1 square. Our custom print texture expects to fill the whole
+    // printable surface, so stretch that sub-rectangle out to 0-1 here — this
+    // is what makes the default (unscaled, unmoved) artwork land centered.
+    function normalizeUVToFullRange(geo){
+      const uvAttr = geo.getAttribute('uv');
+      let minU=Infinity,maxU=-Infinity,minV=Infinity,maxV=-Infinity;
+      for(let i=0;i<uvAttr.count;i++){
+        const u=uvAttr.getX(i), v=uvAttr.getY(i);
+        if(u<minU)minU=u; if(u>maxU)maxU=u;
+        if(v<minV)minV=v; if(v>maxV)maxV=v;
+      }
+      const spanU=(maxU-minU)||1, spanV=(maxV-minV)||1;
+      for(let i=0;i<uvAttr.count;i++){
+        uvAttr.setXY(i,(uvAttr.getX(i)-minU)/spanU,(uvAttr.getY(i)-minV)/spanV);
+      }
+      uvAttr.needsUpdate=true;
+    }
+
     // Mesh 0 — transparent case body (material 0 = KHR_materials_transmission)
     const geo0 = buildMesh(gltfJSON.meshes[0].primitives[0]);
+    normalizeUVToFullRange(geo0);
     const mat0 = new THREE.MeshPhysicalMaterial({
       map:            null,
       transparent:    true,
@@ -1489,7 +1796,7 @@ function applyDesignToCase(){
   // The artwork itself remains un-tinted because the final material stays white.
   ctx.fillStyle=st.color.hex;
   ctx.fillRect(0,0,printSize.w,printSize.h);
-  if(st.backgroundImg) drawImageCover(ctx,st.backgroundImg,printSize.w,printSize.h);
+  if(st.backgroundImg) drawImageCover(ctx,st.backgroundImg,printSize.w,printSize.h,st.bg);
   ctx.translate(printSize.w/2 + st.print.x, printSize.h/2 + st.print.y);
   ctx.rotate(st.print.rotate * Math.PI / 180);
   ctx.scale(st.print.flipX ? -st.print.scale : st.print.scale, st.print.flipY ? -st.print.scale : st.print.scale);
@@ -1499,7 +1806,6 @@ function applyDesignToCase(){
   if(designTexture) designTexture.dispose();
   designTexture = new THREE.CanvasTexture(c);
   designTexture.encoding = THREE.sRGBEncoding;
-  designTexture.flipY = false;
   if(st.model.kind==='airpods'){
     designTexture.wrapS=THREE.RepeatWrapping;
     designTexture.wrapT=THREE.ClampToEdgeWrapping;
@@ -1521,14 +1827,19 @@ function getPrintCanvasSize(){
   return st.model.kind==='airpods' ? {w:1400,h:700} : {w:512,h:700};
 }
 
-function drawImageCover(ctx, img, w, h){
+function drawImageCover(ctx, img, w, h, t={scale:1,x:0,y:0}){
   const iw = img.naturalWidth || img.width;
   const ih = img.naturalHeight || img.height;
-  const scale = Math.max(w / iw, h / ih);
+  const scale = Math.max(w / iw, h / ih) * t.scale;
   const dw = iw * scale;
   const dh = ih * scale;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0,0,w,h);
+  ctx.clip();
   ctx.clearRect(0,0,w,h);
-  ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  ctx.drawImage(img, (w - dw) / 2 + t.x, (h - dh) / 2 + t.y, dw, dh);
+  ctx.restore();
 }
 
 function drawImageContain(ctx,img,w,h){
@@ -1669,6 +1980,53 @@ function updatePrintTexture(){
   refreshPrintTools();
 }
 
+// Shared by the upload flow and the design-library flow: both end up
+// setting the same artwork.url-equivalent (st.userImg) and feed the same
+// preview/summary/order pipeline, only "source"/"designId"/"printFile" differ.
+function setArtworkImage(img, meta){
+  st.userImg=img;
+  st.artworkName=meta.title || '';
+  st.artwork={
+    source:meta.source,
+    designId:meta.designId || null,
+    title:meta.title || '',
+    thumbnail:meta.thumbnail || null,
+    preview:meta.preview || null,
+    printFile:meta.printFile || null,
+    licenseType:meta.licenseType || null
+  };
+  fitPrintToImage(img);
+  applyDesignToCase();
+  document.getElementById('sv3').textContent=meta.stepLabel || meta.title || 'Uploaded';
+  document.getElementById('sn3').className='step-num done';
+  document.getElementById('sumD').textContent=meta.title || '';
+  document.getElementById('briefArtwork').textContent=meta.title || '';
+  document.getElementById('artworkFileInfo').textContent=meta.title || '';
+  document.getElementById('artworkSizeInfo').textContent=`${img.naturalWidth} × ${img.naturalHeight}px`;
+  document.getElementById('artworkSourceInfo').textContent=meta.source==='library' ? `Library · ${meta.title}` : 'Customer upload';
+  document.getElementById('clearArtworkBtn').disabled=false;
+}
+
+function refreshBgTools(){
+  const b = st.bg;
+  const controls = [
+    ['pbScale', Math.round(b.scale * 100), 'pbScaleVal', Math.round(b.scale * 100) + '%'],
+    ['pbX', b.x, 'pbXVal', b.x],
+    ['pbY', b.y, 'pbYVal', b.y],
+  ];
+  controls.forEach(([id, value, labelId, label])=>{
+    const input=document.getElementById(id);
+    const text=document.getElementById(labelId);
+    if(input) input.value=value;
+    if(text) text.textContent=label;
+  });
+}
+
+function updateBgTexture(){
+  if(st.userImg) applyDesignToCase();
+  refreshBgTools();
+}
+
 function initPrintTools(){
   const bindRange=(id, key, map=v=>Number(v))=>{
     const el=document.getElementById(id);
@@ -1691,10 +2049,52 @@ function initPrintTools(){
     updatePrintTexture();
   });
   document.getElementById('ptReset')?.addEventListener('click',()=>{
-    st.print={scale:1, rotate:0, x:0, y:0, flipX:false, flipY:true};
+    st.print={scale:1, rotate:0, x:0, y:0, flipX:false, flipY:false};
     updatePrintTexture();
   });
+  document.getElementById('ptToggle')?.addEventListener('click',()=>openPrintTools());
+  document.getElementById('ptClose')?.addEventListener('click',()=>closePrintTools());
+
+  const bindBgRange=(id, key, map=v=>Number(v))=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', e=>{
+      st.bg[key]=map(e.target.value);
+      updateBgTexture();
+    });
+  };
+  bindBgRange('pbScale','scale',v=>Number(v)/100);
+  bindBgRange('pbX','x');
+  bindBgRange('pbY','y');
+  document.getElementById('pbReset')?.addEventListener('click',()=>{
+    st.bg={scale:1, x:0, y:0};
+    updateBgTexture();
+  });
+
+  document.getElementById('ptTabArt')?.addEventListener('click',()=>switchPtTab('art'));
+  document.getElementById('ptTabBg')?.addEventListener('click',()=>switchPtTab('bg'));
+
   refreshPrintTools();
+  refreshBgTools();
+}
+
+function switchPtTab(tab){
+  const isArt = tab==='art';
+  document.getElementById('ptTabArt')?.classList.toggle('active', isArt);
+  document.getElementById('ptTabBg')?.classList.toggle('active', !isArt);
+  document.getElementById('ptArtPanel')?.classList.toggle('collapsed', !isArt);
+  document.getElementById('ptBgPanel')?.classList.toggle('collapsed', isArt);
+}
+
+function openPrintTools(tab){
+  if(tab) switchPtTab(tab);
+  document.getElementById('printTools')?.classList.remove('collapsed');
+  document.getElementById('ptToggle')?.classList.add('collapsed');
+}
+
+function closePrintTools(){
+  document.getElementById('printTools')?.classList.add('collapsed');
+  document.getElementById('ptToggle')?.classList.remove('collapsed');
 }
 
 function handleImageFile(file, inputEl){
@@ -1708,18 +2108,13 @@ function handleImageFile(file, inputEl){
   reader.onload=ev=>{
     const img=new Image();
     img.onload=()=>{
-      st.userImg=img;
-      st.artworkName=file.name;
-      fitPrintToImage(img);
-      applyDesignToCase();
-      document.getElementById('sv3').textContent='Uploaded';
-      document.getElementById('sn3').className='step-num done';
-      document.getElementById('sumD').textContent=file.name;
-      document.getElementById('briefArtwork').textContent=file.name;
-      document.getElementById('artworkFileInfo').textContent=file.name;
-      document.getElementById('artworkSizeInfo').textContent=`${img.naturalWidth} × ${img.naturalHeight}px`;
-      document.getElementById('clearArtworkBtn').disabled=false;
-      showToast('✅','Image uploaded','Adjust scale and position below');
+      setArtworkImage(img, {
+        source:'upload', title:file.name,
+        thumbnail:ev.target.result, preview:ev.target.result, printFile:null,
+        licenseType:'customer-upload', stepLabel:'Uploaded'
+      });
+      openPrintTools('art');
+      showToast('✅','Image uploaded','Adjust scale and position on the preview');
       if(inputEl) inputEl.value='';
     };
     img.onerror=()=>{
@@ -1742,6 +2137,7 @@ function initUpload(){
   document.getElementById('clearArtworkBtn')?.addEventListener('click',()=>{
     st.userImg=null;
     st.artworkName='';
+    st.artwork={source:null, designId:null, title:null, thumbnail:null, preview:null, printFile:null, licenseType:null};
     clearDesign();
     document.getElementById('sv3').textContent='—';
     document.getElementById('sn3').className='step-num active';
@@ -1749,6 +2145,7 @@ function initUpload(){
     document.getElementById('briefArtwork').textContent='Not uploaded';
     document.getElementById('artworkFileInfo').textContent='Not uploaded';
     document.getElementById('artworkSizeInfo').textContent='—';
+    document.getElementById('artworkSourceInfo').textContent='—';
     document.getElementById('clearArtworkBtn').disabled=true;
   });
 
@@ -1774,8 +2171,13 @@ function initUpload(){
         document.getElementById('sumBg').textContent='Custom image';
         document.getElementById('briefBackground').textContent=file.name;
         clearBackground.disabled=false;
-        if(st.userImg) applyDesignToCase();
-        showToast('✅','Background applied','Main artwork remains independently adjustable');
+        if(st.userImg){
+          applyDesignToCase();
+          openPrintTools('bg');
+          showToast('✅','Background applied','Adjust its scale and position on the preview');
+        } else {
+          showToast('✅','Background saved','Upload your artwork to see it on the case');
+        }
         e.target.value='';
       };
       img.onerror=()=>showToast('Warning','Background failed','Please try another image');
@@ -1786,11 +2188,148 @@ function initUpload(){
   clearBackground?.addEventListener('click',()=>{
     st.backgroundImg=null;
     st.backgroundName='';
+    st.bg={scale:1, x:0, y:0};
+    refreshBgTools();
     backgroundStatus.textContent='Background: product color';
     document.getElementById('sumBg').textContent='Product color';
     document.getElementById('briefBackground').textContent='Product color';
     clearBackground.disabled=true;
     if(st.userImg) applyDesignToCase();
+  });
+}
+
+/* ════════════════════════════════
+   DESIGN LIBRARY MODAL
+   "Choose From Library" is just another way to set the same artwork —
+   it shares fitPrintToImage/applyDesignToCase/setArtworkImage with the
+   upload flow so preview, transform, summary and order JSON stay unified.
+════════════════════════════════ */
+function initDesignLibrary(){
+  const modal=document.getElementById('designLibraryModal');
+  const openBtn=document.getElementById('openDesignLibraryBtn');
+  const closeEls=document.querySelectorAll('[data-close-design-library]');
+  const searchInput=document.getElementById('designLibrarySearch');
+  const themeChipsWrap=document.getElementById('designThemeChips');
+  const styleChipsWrap=document.getElementById('designStyleChips');
+  const grid=document.getElementById('designLibraryGrid');
+  const selectedText=document.getElementById('designLibrarySelectedText');
+  const useBtn=document.getElementById('useSelectedDesignBtn');
+  if(!modal || !openBtn) return;
+
+  let activeTheme='';
+  let activeStyle='';
+  let tempSelectedDesign=null;
+
+  function uniqueValues(items, key){
+    return [...new Set(items.map(i=>i[key]).filter(Boolean))];
+  }
+
+  function createChip(label, activeValue, onClick){
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='design-library-chip';
+    button.textContent=label || 'All';
+    if((label||'')===activeValue) button.classList.add('is-active');
+    button.addEventListener('click', onClick);
+    return button;
+  }
+
+  function renderFilterChips(){
+    const eligible=getEligibleDesigns();
+    const themes=uniqueValues(eligible,'theme');
+    const styles=uniqueValues(eligible,'style');
+    themeChipsWrap.innerHTML='';
+    styleChipsWrap.innerHTML='';
+    themeChipsWrap.appendChild(createChip('', activeTheme, ()=>{activeTheme='';renderFilterChips();renderDesignGrid();}));
+    themes.forEach(theme=>themeChipsWrap.appendChild(createChip(theme, activeTheme, ()=>{activeTheme=theme;renderFilterChips();renderDesignGrid();})));
+    styleChipsWrap.appendChild(createChip('', activeStyle, ()=>{activeStyle='';renderFilterChips();renderDesignGrid();}));
+    styles.forEach(style=>styleChipsWrap.appendChild(createChip(style, activeStyle, ()=>{activeStyle=style;renderFilterChips();renderDesignGrid();})));
+  }
+
+  function getFilteredDesigns(){
+    const search=(searchInput.value||'').trim().toLowerCase();
+    return getEligibleDesigns().filter(d=>{
+      const haystack=[d.title,d.theme,d.style,...(d.tags||[])].filter(Boolean).join(' ').toLowerCase();
+      const matchSearch=!search || haystack.includes(search);
+      const matchTheme=!activeTheme || d.theme===activeTheme;
+      const matchStyle=!activeStyle || d.style===activeStyle;
+      return matchSearch && matchTheme && matchStyle;
+    });
+  }
+
+  function renderDesignGrid(){
+    const designs=getFilteredDesigns();
+    grid.innerHTML='';
+    if(!designs.length){
+      grid.innerHTML='<div class="design-library-empty">No designs found.</div>';
+      return;
+    }
+    designs.forEach(design=>{
+      const card=document.createElement('button');
+      card.type='button';
+      card.className='design-card'+(tempSelectedDesign?.id===design.id ? ' is-selected' : '');
+      card.innerHTML=`
+        <div class="design-card__image-wrap"><img class="design-card__image" src="${design.thumbnail}" alt="${design.title}" loading="lazy"></div>
+        <div class="design-card__body">
+          <div class="design-card__title">${design.title}</div>
+          <div class="design-card__meta">${design.theme} · ${design.style}</div>
+        </div>`;
+      card.addEventListener('click', ()=>{
+        tempSelectedDesign=design;
+        selectedText.textContent=`Selected: ${design.title}`;
+        useBtn.disabled=false;
+        renderDesignGrid();
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  function openModal(){
+    tempSelectedDesign=null;
+    selectedText.textContent='No design selected';
+    useBtn.disabled=true;
+    if(searchInput) searchInput.value='';
+    activeTheme='';
+    activeStyle='';
+    modal.classList.add('is-open');
+    modal.setAttribute('aria-hidden','false');
+    document.documentElement.style.overflow='hidden';
+    renderFilterChips();
+    renderDesignGrid();
+  }
+
+  function closeModal(){
+    modal.classList.remove('is-open');
+    modal.setAttribute('aria-hidden','true');
+    document.documentElement.style.overflow='';
+  }
+
+  function applyLibraryDesign(design){
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=()=>{
+      setArtworkImage(img, {
+        source:'library', designId:design.id, title:design.title,
+        thumbnail:design.thumbnail, preview:design.preview, printFile:design.printFile,
+        licenseType:design.licenseType, stepLabel:design.title
+      });
+      openPrintTools('art');
+      showToast('✅','Design applied', design.title+' is now on your case');
+      closeModal();
+    };
+    img.onerror=()=>showToast('⚠️','Could not load design','Please try another design');
+    img.src=design.preview;
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeEls.forEach(el=>el.addEventListener('click', closeModal));
+  searchInput?.addEventListener('input', renderDesignGrid);
+  useBtn?.addEventListener('click', ()=>{
+    if(!tempSelectedDesign) return;
+    applyLibraryDesign(tempSelectedDesign);
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape' && modal.classList.contains('is-open')) closeModal();
   });
 }
 
@@ -1976,6 +2515,14 @@ function buildOrderPayload(){
       width: st.userImg.naturalWidth || st.userImg.width,
       height: st.userImg.naturalHeight || st.userImg.height
     } : null,
+    artwork: {
+      source: st.artwork.source,
+      designId: st.artwork.designId,
+      title: st.artwork.title,
+      preview: st.artwork.preview,
+      printFile: st.artwork.printFile,
+      licenseType: st.artwork.licenseType
+    },
     background: st.backgroundImg ? (st.backgroundName || 'Custom background') : 'Product color',
     quantity: Number(getFieldValue('orderQty')) || 1,
     customer: {
@@ -2042,6 +2589,7 @@ buildSeriesTabs();
 buildModelGrid();
 buildColors();
 initUpload();
+initDesignLibrary();
 initPrintTools();
 // Step 3 open by default so uploading a custom image is immediately visible.
 document.getElementById('sb3').classList.remove('hidden');
